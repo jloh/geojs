@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: jloh/geojs-tests:beta-0.0.1
+    steps:
+      - checkout
+      - run:
+          name: 'Setup'
+          command: bash t/setup/circleci-setup.sh
+      # Required repos
+      # TODO: Work out a way to cache these?
+      - run:
+          name: 'Checkout dependencies'
+          command: |
+            git clone --branch v0.10 https://github.com/pintsized/lua-resty-http.git repos/lua-resty-http
+            git clone --branch v0.18 https://github.com/openresty/lua-resty-dns.git repos/lua-resty-dns
+            git clone --branch v0.10 https://github.com/openresty/lua-resty-upload.git repos/lua-resty-upload
+            git clone --branch v1.4  https://github.com/bungle/lua-resty-reqargs.git repos/lua-resty-reqargs
+      - run:
+          name: 'Nginx version'
+          command: nginx -V
+      - run:
+          name: 'Tests'
+          command: prove -r t/
+
+notify:
+  webhooks:
+    # A list of hook hashes, containing the url field
+    # gitter hook
+    - url: https://webhooks.gitter.im/e/52d0ede6149c8fcdf4cd
