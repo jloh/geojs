@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jloh/geojs-tests:beta-0.0.1
+      - image: jloh/geojs-tests:beta-0.0.2
     steps:
       - checkout
       - run:
