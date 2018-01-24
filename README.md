@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/jloh/geojs"><img src="https://travis-ci.org/jloh/geojs.svg?branch=master"></a>
+  <a href="https://circleci.com/gh/jloh/geojs"><img src="https://img.shields.io/circleci/project/github/jloh/geojs.svg"></a>
   <img src="https://img.shields.io/github/release/jloh/geojs.svg">
   <img src="https://img.shields.io/github/license/jloh/geojs.svg">
   <a href="https://gitter.im/jloh/geojs"><img src="https://img.shields.io/gitter/room/jloh/geojs.svg?logo=gitter-white"></a>
