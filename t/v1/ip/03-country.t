@@ -8,98 +8,93 @@ our $HttpConfig = qq{
     geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
     geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
     lua_package_path "$pwd/lib/?.lua;;";
+    real_ip_header X-IP;
     set_real_ip_from  127.0.0.1/32;
 };
 
 run_tests();
 
 __DATA__
-=== TEST 1: Valid config
---- http_config eval
-"$::HttpConfig"
---- config
-    include "../../../conf/v1/ip.conf";
-    location /sanity {
-        echo "OK";
-    }
---- request
-GET /sanity
---- no_error_log
-[error]
---- response_body
-OK
-
-
-=== TEST 2: Plain text endpoint
+=== TEST 1: Plain text endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip
+GET /v1/ip/country
+--- more_headers
+X-IP: 8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
 Content-Type: text/plain
 --- response_body
-127.0.0.1
+US
 
 
-=== TEST 3: JSON Endpoint
+=== TEST 2: JSON Endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip.json
+GET /v1/ip/country.json
+--- more_headers
+X-IP: 8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"ip":"127.0.0.1"}
+{"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"}
 
 
-=== TEST 4: JS Endpoint
+=== TEST 3: JS Endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
+--- more_headers
+X-IP: 8.8.8.8
 --- request
-GET /v1/ip.js
+GET /v1/ip/country.js
 --- no_error_log
 [error]
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-geoip({"ip":"127.0.0.1"})
+countryip({"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"})
 
 
-=== TEST 5: JS Endpoint with custom callback
+=== TEST 4: JS Endpoint with custom callback
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip.js?callback=tests
+GET /v1/ip/country.js?callback=tests
+--- more_headers
+X-IP: 8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-tests({"ip":"127.0.0.1"})
+tests({"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"})
 
 
-=== TEST 6: JS Endpoint sanitise user input
+=== TEST 5: JS Endpoint sanitise user input
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip.js?callback=<script>
+GET /v1/ip/country.js?callback=<script>
+--- more_headers
+X-IP: 8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-%3Cscript%3E({"ip":"127.0.0.1"})
+%3Cscript%3E({"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"})
