@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: jloh/geojs-tests:beta-0.0.3
+    environment:
+      - TEST_COVERAGE: 1
     steps:
       - checkout
       - run:
