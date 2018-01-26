@@ -110,7 +110,43 @@ GET /t
 google-public-dns-a.google.com
 
 
-=== TEST 5: Test upstream req
+=== TEST 5: Bad DNS server
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        set $geojs_dns_server '127.0.0.1';
+        content_by_lua_block {
+            local getptr = require("geojs.utils").get_ptr
+            local ptr    = getptr('8.8.8.8')
+            ngx.say(ptr)
+        }
+    }
+--- request
+GET /t
+--- response_body
+Failed to query DNS servers
+
+
+=== TEST 6: Bad PTR record
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        set $geojs_dns_server '8.8.8.8';
+        content_by_lua_block {
+            local getptr = require("geojs.utils").get_ptr
+            local ptr    = getptr('192.168.0.1')
+            ngx.say(ptr)
+        }
+    }
+--- request
+GET /t
+--- response_body
+Failed to get PTR record
+
+
+=== TEST 7: Test upstream req
 --- http_config eval
 "$::HttpConfig
 $::UpstreamConfig"
@@ -128,3 +164,20 @@ GET /t
 [error]
 --- response_body
 OK
+
+
+=== TEST 8: Failed upstream req
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local upstreamreq = require("geojs.utils").upstream_req
+            local req         = upstreamreq('/t', '8.8.8.8')
+            ngx.print(req)
+        }
+    }
+--- request
+GET /t
+--- response_body chomp
+nil
