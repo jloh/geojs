@@ -53,7 +53,7 @@ end
 -- Gets a PTR
 function _M.get_ptr(ip)
     local resolver = require "resty.dns.resolver"
-    local servers  = ngx.var.geojs_dns_server
+    local servers  = {ngx.var.geojs_dns_server}
     local r, err = resolver:new{
         nameservers = servers,
         retrans = 2,     -- 2 retransmissions on receive timeout
