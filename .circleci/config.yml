@@ -27,6 +27,11 @@ jobs:
       - run:
           name: 'Tests'
           command: prove -r t/ -a test_results.tgz
+      - run:
+          name: 'Test Coverage'
+          command: |
+            luacov
+            luacov-coveralls
       - store_artifacts:
           path: test_results.tgz
 

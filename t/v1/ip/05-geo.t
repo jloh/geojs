@@ -3,7 +3,14 @@ use Cwd qw(cwd);
 
 my $pwd = cwd();
 
+$ENV{TEST_COVERAGE} ||= 0;
+
 our $HttpConfig = qq{
+    init_by_lua_block {
+        if $ENV{TEST_COVERAGE} == 1 then
+            require("luacov.runner").init()
+        end
+    }
     geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
     geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
     geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
