@@ -1,3 +1,6 @@
 # Unit tests
 t/servroot
 download-cache/
+
+# Coverage reports
+luacov*

@@ -2,7 +2,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jloh/geojs-tests:beta-0.0.2
+      - image: jloh/geojs-tests:beta-0.0.3
+    environment:
+      - TEST_COVERAGE: 1
     steps:
       - checkout
       - run:
@@ -27,6 +29,11 @@ jobs:
       - run:
           name: 'Tests'
           command: prove -r t/ -a test_results.tgz
+      - run:
+          name: 'Test Coverage'
+          command: |
+            luacov
+            luacov-coveralls
       - store_artifacts:
           path: test_results.tgz
 
