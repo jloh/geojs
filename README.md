@@ -8,10 +8,10 @@
 
 <p align="center">
   <a href="https://circleci.com/gh/jloh/geojs"><img src="https://img.shields.io/circleci/project/github/jloh/geojs.svg"></a>
+  <a href='https://coveralls.io/github/jloh/geojs?branch=master'><img src='https://coveralls.io/repos/github/jloh/geojs/badge.svg?branch=master' alt='Coverage Status' /></a>
   <img src="https://img.shields.io/github/release/jloh/geojs.svg">
   <img src="https://img.shields.io/github/license/jloh/geojs.svg">
   <a href="https://gitter.im/jloh/geojs"><img src="https://img.shields.io/gitter/room/jloh/geojs.svg?logo=gitter-white"></a>
-  <a href="https://waffle.io/jloh/geojs"><img src="https://badge.waffle.io/jloh/geojs.svg?columns=Inbox,To%20Do,In%20Progress"></a>
 </p>
 <p align="center">
   <a href="https://jloh.slack.com/apps/A6WCHU48J-geojs"><img src="https://img.shields.io/badge/slack-app-E01765.svg"></a>
@@ -57,6 +57,10 @@ GeoJS has a free unlimited production instance running at [get.geojs.io](https:/
 ToDo!
 
 ### Contributing
+
+<a href="https://waffle.io/jloh/geojs"><img src="https://badge.waffle.io/jloh/geojs.svg"></a>
+
+We use [Waffle](https://waffle.io/jloh/geojs) to track our work, feel free to tackle anything in the *To Do* column.
 
 Pull requests are warmly welcome!
 
