@@ -15,23 +15,7 @@ our $HttpConfig = qq{
 run_tests();
 
 __DATA__
-=== TEST 1: Valid config
---- http_config eval
-"$::HttpConfig"
---- config
-    include "../../../conf/v1/ip.conf";
-    location /sanity {
-        echo "OK";
-    }
---- request
-GET /sanity
---- no_error_log
-[error]
---- response_body
-OK
-
-
-=== TEST 2: Plain text endpoint
+=== TEST 1: Plain text endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
@@ -48,7 +32,7 @@ Content-Type: text/plain
 US
 
 
-=== TEST 3: JSON Endpoint
+=== TEST 2: JSON Endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
@@ -62,10 +46,10 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"}
+{"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"}
 
 
-=== TEST 4: JS Endpoint
+=== TEST 3: JS Endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
@@ -79,10 +63,10 @@ GET /v1/ip/country.js
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-countryip({"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"})
+countryip({"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"})
 
 
-=== TEST 5: JS Endpoint with custom callback
+=== TEST 4: JS Endpoint with custom callback
 --- http_config eval
 "$::HttpConfig"
 --- config
@@ -96,10 +80,10 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-tests({"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"})
+tests({"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"})
 
 
-=== TEST 6: JS Endpoint sanitise user input
+=== TEST 5: JS Endpoint sanitise user input
 --- http_config eval
 "$::HttpConfig"
 --- config
@@ -113,4 +97,4 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-%3Cscript%3E({"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"})
+%3Cscript%3E({"country":"US","ip":"8.8.8.8","name":"United States","country_3":"USA"})
