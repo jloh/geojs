@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jloh/geojs-tests:beta-0.0.1
+      - image: jloh/geojs-tests:beta-0.0.2
     steps:
       - checkout
       - run:
@@ -26,7 +26,9 @@ jobs:
           command: nginx -V
       - run:
           name: 'Tests'
-          command: prove -r t/
+          command: prove -r t/ -a test_results.tgz
+      - store_artifacts:
+          path: test_results.tgz
 
 notify:
   webhooks:

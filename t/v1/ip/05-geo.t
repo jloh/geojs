@@ -15,46 +15,13 @@ our $HttpConfig = qq{
 run_tests();
 
 __DATA__
-=== TEST 1: Valid config
---- http_config eval
-"$::HttpConfig"
---- config
-    include "../../../conf/v1/ip.conf";
-    location /sanity {
-        echo "OK";
-    }
---- request
-GET /sanity
---- no_error_log
-[error]
---- response_body
-OK
-
-
-=== TEST 2: Plain text endpoint
+=== TEST 1: JSON Endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip/country
---- more_headers
-X-IP: 8.8.8.8
---- no_error_log
-[error]
---- response_headers
-Content-Type: text/plain
---- response_body
-US
-
-
-=== TEST 3: JSON Endpoint
---- http_config eval
-"$::HttpConfig"
---- config
-    include "../../../conf/v1/ip.conf";
---- request
-GET /v1/ip/country.json
+GET /v1/ip/geo.json
 --- more_headers
 X-IP: 8.8.8.8
 --- no_error_log
@@ -62,10 +29,10 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"}
+{"latitude":"37.7510","organization":"AS15169 Google LLC","country_code":"US","ip":"8.8.8.8","longitude":"-97.8220","area_code":"0","continent_code":"NA","country":"United States","country_code3":"USA"}
 
 
-=== TEST 4: JS Endpoint
+=== TEST 2: JS Endpoint
 --- http_config eval
 "$::HttpConfig"
 --- config
@@ -73,22 +40,22 @@ Content-Type: application/json
 --- more_headers
 X-IP: 8.8.8.8
 --- request
-GET /v1/ip/country.js
+GET /v1/ip/geo.js
 --- no_error_log
 [error]
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-countryip({"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"})
+geoip({"latitude":"37.7510","organization":"AS15169 Google LLC","country_code":"US","ip":"8.8.8.8","longitude":"-97.8220","area_code":"0","continent_code":"NA","country":"United States","country_code3":"USA"})
 
 
-=== TEST 5: JS Endpoint with custom callback
+=== TEST 3: JS Endpoint with custom callback
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip/country.js?callback=tests
+GET /v1/ip/geo.js?callback=tests
 --- more_headers
 X-IP: 8.8.8.8
 --- no_error_log
@@ -96,16 +63,16 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-tests({"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"})
+tests({"latitude":"37.7510","organization":"AS15169 Google LLC","country_code":"US","ip":"8.8.8.8","longitude":"-97.8220","area_code":"0","continent_code":"NA","country":"United States","country_code3":"USA"})
 
 
-=== TEST 6: JS Endpoint sanitise user input
+=== TEST 4: JS Endpoint sanitise user input
 --- http_config eval
 "$::HttpConfig"
 --- config
     include "../../../conf/v1/ip.conf";
 --- request
-GET /v1/ip/country.js?callback=<script>
+GET /v1/ip/geo.js?callback=<script>
 --- more_headers
 X-IP: 8.8.8.8
 --- no_error_log
@@ -113,4 +80,4 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-%3Cscript%3E({"country_3":"USA","ip":"8.8.8.8","country":"US","name":"United States"})
+%3Cscript%3E({"latitude":"37.7510","organization":"AS15169 Google LLC","country_code":"US","ip":"8.8.8.8","longitude":"-97.8220","area_code":"0","continent_code":"NA","country":"United States","country_code3":"USA"})
