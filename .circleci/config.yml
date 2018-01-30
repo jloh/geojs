@@ -23,12 +23,13 @@ jobs:
             git clone --branch v0.18 https://github.com/openresty/lua-resty-dns.git repos/lua-resty-dns
             git clone --branch v0.10 https://github.com/openresty/lua-resty-upload.git repos/lua-resty-upload
             git clone --branch v1.4  https://github.com/bungle/lua-resty-reqargs.git repos/lua-resty-reqargs
+            git clone                https://github.com/xiaooloong/lua-resty-iconv.git repos/lua-resty-iconv
       - run:
           name: 'Nginx version'
           command: nginx -V
       - run:
           name: 'Tests'
-          command: prove -r t/ -a test_results.tgz
+          command: prove -r t -a test_results.tgz
       - run:
           name: 'Test Coverage'
           command: |

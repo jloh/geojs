@@ -100,6 +100,20 @@ function _M.upstream_req(reqpath, ip)
     return res.body
 end
 
+function _M.to_utf8(string)
+    local iconv = require "resty.iconv"
+
+    local from  = 'iso-8859-15'
+    local to    = 'utf-8'
+
+    local i, err = iconv:new("utf-8","iso-8859-15")
+    if not i then
+        ngx_log(log_level.ERR, "failed to initiate iconv: ", err)
+        return string
+    end
+    return i:convert(string)
+end
+
 -- Generates callbacks
 -- Most important part is it escapes them from possibly dodgy content
 function _M.generate_callback(default, req_args)

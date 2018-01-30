@@ -14,7 +14,7 @@ our $HttpConfig = qq{
     geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
     geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
     geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
-    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;$pwd/repos/lua-resty-http/lib/?.lua;;";
+    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;$pwd/repos/lua-resty-http/lib/?.lua;$pwd/repos/lua-resty-iconv/lualib/?.lua;;";
     real_ip_header X-IP;
     set_real_ip_from  127.0.0.1/32;
 };
@@ -181,3 +181,23 @@ OK
 GET /t
 --- response_body chomp
 nil
+
+=== TEST 9: Iconv encoding
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local to_utf8 = require("geojs.utils").to_utf8
+            local string  = 'Ã'
+            ngx.print(to_utf8(string))
+            ngx.log(ngx.ERR, 'hello: ', to_utf8(string))
+        }
+    }
+--- request
+GET /t
+--- response_body chomp
+Ã0
