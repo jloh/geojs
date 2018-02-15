@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: jloh/geojs-tests:beta-0.0.3
+    environment:
+      - TEST_COVERAGE: 1
     steps:
       - checkout
       - run:
@@ -31,8 +33,8 @@ jobs:
       - run:
           name: 'Test Coverage'
           command: |
-            if [[ "${TEST_COVERAGE}x" == '1x' ]]; then luacov; fi
-            if [[ "${TEST_COVERAGE}x" == '1x' ]]; then luacov-coveralls; fi
+            luacov
+            luacov-coveralls
       - store_artifacts:
           path: test_results.tgz
 
