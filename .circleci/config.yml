@@ -17,11 +17,11 @@ jobs:
       - run:
           name: 'Checkout dependencies'
           command: |
-            git clone --branch v0.10 https://github.com/pintsized/lua-resty-http.git repos/lua-resty-http
-            git clone --branch v0.18 https://github.com/openresty/lua-resty-dns.git repos/lua-resty-dns
-            git clone --branch v0.10 https://github.com/openresty/lua-resty-upload.git repos/lua-resty-upload
-            git clone --branch v1.4  https://github.com/bungle/lua-resty-reqargs.git repos/lua-resty-reqargs
-            git clone                https://github.com/xiaooloong/lua-resty-iconv.git repos/lua-resty-iconv
+            git clone -q --branch v0.10 https://github.com/pintsized/lua-resty-http.git repos/lua-resty-http
+            git clone -q --branch v0.18 https://github.com/openresty/lua-resty-dns.git repos/lua-resty-dns
+            git clone -q --branch v0.10 https://github.com/openresty/lua-resty-upload.git repos/lua-resty-upload
+            git clone -q --branch v1.4  https://github.com/bungle/lua-resty-reqargs.git repos/lua-resty-reqargs
+            git clone -q                https://github.com/xiaooloong/lua-resty-iconv.git repos/lua-resty-iconv
       - run:
           name: 'Nginx version'
           command: nginx -V
