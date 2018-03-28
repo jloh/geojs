@@ -201,3 +201,53 @@ nil
 GET /t
 --- response_body chomp
 Ã0
+
+=== TEST 10: Validate IPv4/IPv6 IPs
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local validate_ip = require("geojs.utils").validate_ip
+            local args = ngx.req.get_uri_args()
+            local ip  = args.ip
+            if validate_ip(ip) then
+                ngx.print("OK")
+            end
+        }
+    }
+--- request eval
+["GET /t?ip=8.8.8.8",
+"GET /t?ip=2001:4860:4860::8888"]
+--- no_error_log
+[error]
+--- response_body eval
+["OK","OK"]
+
+=== TEST 11: Fail on bad IPs
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local validate_ip = require("geojs.utils").validate_ip
+            local args = ngx.req.get_uri_args()
+            local ip  = args.ip
+            if not validate_ip(ip) then
+                ngx.print("OK")
+            end
+        }
+    }
+--- request eval
+["GET /t?ip=8.8.8.256",
+"GET /t?ip=2001:4860:4860::88888"]
+--- no_error_log
+[error]
+--- response_body eval
+["OK","OK"]

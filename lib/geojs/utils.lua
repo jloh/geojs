@@ -1,6 +1,7 @@
 local ngx_log    = ngx.log
 local ngx_var    = ngx.var
 local escape_uri = ngx.escape_uri
+local ngx_re     = ngx.re
 
 local log_level = {
     STDERR = ngx.STDERR,
@@ -112,6 +113,19 @@ function _M.to_utf8(string)
         return string
     end
     return i:convert(string)
+end
+
+function _M.validate_ip(ip)
+    -- Should match 8.8.8.8
+    local regex = [[^((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$]]
+    local m, err = ngx_re.match(ip, regex)
+    if m then
+        ngx_log(log_level.INFO, "match: ", m[0])
+        return true
+    else
+        ngx_log(log_level.INFO, "we did not match")
+        return false
+    end
 end
 
 -- Generates callbacks
