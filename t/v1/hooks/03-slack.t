@@ -64,3 +64,23 @@ Content-type: application/x-www-form-urlencoded
 "text=8.8.8.8 display",
 "command=geojs")
 --- error_code: 403
+
+=== TEST 3: Bad IP
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/hooks.conf";
+    set $geojs_slack_token '1234';
+    set $geojs_dns_server '8.8.8.8';
+--- more_headers
+Content-type: application/x-www-form-urlencoded
+--- request eval
+"POST /v1/hooks/slack
+".CORE::join("&",
+"token=1234",
+"text=google.com",
+"command=geojs")
+--- no_error_log
+[error]
+--- response_body
+{"attachments":[{"text":"Hmmm. Looks like you've given us a bad IP (`google.com`). This command only accepts IPs (IPv6 or IPv4) for now, sorry!","mrkdwn_in":["text"],"fallback":"Hmmm. Looks like you've given us a bad IP. This command only accepts IPs (IPv6 or IPv4) for now, sorry!","color":"danger"}]}
