@@ -92,3 +92,25 @@ Content-type: application/x-www-form-urlencoded
 Content-Type: application/json
 --- response_body
 {"content":"pong"}
+
+=== TEST 4: Fail on bad IP
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/hooks.conf";
+    set $geojs_twistapp_token '1234';
+    set $geojs_dns_server '8.8.8.8';
+--- more_headers
+Content-type: application/x-www-form-urlencoded
+--- request eval
+"POST /v1/hooks/twistapp
+".CORE::join("&",
+"verify_token=1234",
+"command_argument=google.com",
+"command=geojs")
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/json
+--- response_body
+{"content":"Hmmm. Looks like you've given us a bad IP (`google.com`). This command only accepts IPs (IPv6 or IPv4) for now, sorry!"}
