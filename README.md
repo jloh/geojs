@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  A higly available backendless geo-location lookup API
+  A highly available backendless geo-location lookup API
 </p>
 
 <p align="center">
@@ -64,12 +64,22 @@ We use [Waffle](https://waffle.io/jloh/geojs) to track our work, feel free to ta
 
 Pull requests are warmly welcome!
 
+### Sponsors
+
+GeoJS runs on Digital Ocean's cloud computing platform. Use the link below to get $10 on signup and support GeoJS going forward.
+
+<p align="center">
+  <a href="https://m.do.co/c/2c9ab4daaa8d/" title="DigitalOcean: Cloud Computing, Simplicity at Scale">
+    <img src="https://geojs.io/img/DO_Logo_horizontal_blue.svg" alt="Digital Ocean">
+  </a>
+</p>
+
 ### Licence
 
 ```
 MIT License
 
-Copyright (c) 2017 James Loh
+Copyright (c) 2017-2018 James Loh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
