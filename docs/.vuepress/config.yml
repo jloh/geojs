@@ -1,0 +1,16 @@
+---
+title: GeoJS
+description: 'Highly available REST/JSON/JSONP IP Geolocation lookup API'
+serviceWorker: true
+themeConfig:
+    repo: 'jloh/geojs'
+    lastUpdated: 'Last Updated'
+    editLinks: true
+    docsDir: 'docs'
+    nav:
+        - text: Home
+          link: '/'
+        - text: Docs
+          link: '/docs/'
+        - text: Blog
+          link: 'https://jloh.co/tag/geojs/'

@@ -4,3 +4,10 @@ download-cache/
 
 # Coverage reports
 luacov*
+
+# node stuff
+node_modules
+
+
+# Docs!
+docs/.vuepress/dist
