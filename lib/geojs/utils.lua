@@ -439,6 +439,22 @@ function _M.country_lookup(ip)
 end
 
 function _M.geo_lookup(ip)
+    -- Lookup IP
+    local lookup = _M.geoip_lookup(ip)
+    local res = {
+        ["ip"]             = ip,
+        ["country"]        = lookup["country"]["names"]["en"],
+        ["country_code"]   = lookup["country"]["iso_code"],
+        ["country_code3"]  = lookup["country"]["iso_code3"],
+        ["continent_code"] = lookup["continent"]["code"],
+        ["city"]           = lookup["city"]["names"]["en"],
+        ["region"]         = lookup["subdivisions"][0]["names"]["en"],
+        ["latitude"]       = lookup["location"]["latitude"],
+        ["longitude"]      = lookup["location"]["longitude"],
+        ["organization"]   = lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"]
+    }
+
+    return res
 end
 
 return _M
