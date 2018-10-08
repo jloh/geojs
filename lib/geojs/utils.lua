@@ -454,7 +454,7 @@ function _M.geo_lookup(ip)
         ["longitude"]      = lookup["location"]["longitude"],
         ["accuracy"]       = lookup["location"]["accuracy_radius"],
         ["timezone"]       = lookup["location"]["time_zone"],
-        ["organization"]   = lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"]
+        ["organization"]   = 'AS' .. lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"]
     }
 
     return res
