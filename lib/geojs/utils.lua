@@ -407,7 +407,7 @@ function init_dbs()
     end
 end
 
-function _M.geoip_lookup(ip)
+local function geoip_lookup(ip)
     -- Ensure DBs are init'd
     init_dbs()
 
@@ -425,10 +425,11 @@ function _M.geoip_lookup(ip)
 
     return ip_data
 end
+_M.geoip_lookup = geoip_lookup
 
 function _M.country_lookup(ip)
     -- Lookup IP
-    local lookup = _M.geoip_lookup(ip)
+    local lookup = geoip_lookup(ip)
     local res = {
         ["country"]   = lookup["country"]["iso_code"],
         ["country_3"] = lookup["country"]["iso_code3"],
@@ -440,7 +441,7 @@ end
 
 function _M.geo_lookup(ip)
     -- Lookup IP
-    local lookup = _M.geoip_lookup(ip)
+    local lookup = geoip_lookup(ip)
     local res = {
         ["ip"]             = ip,
         ["country"]        = lookup["country"]["names"]["en"],
@@ -448,9 +449,11 @@ function _M.geo_lookup(ip)
         ["country_code3"]  = lookup["country"]["iso_code3"],
         ["continent_code"] = lookup["continent"]["code"],
         ["city"]           = lookup["city"]["names"]["en"],
-        ["region"]         = lookup["subdivisions"][0]["names"]["en"],
+        ["region"]         = lookup["subdivisions"][1]["names"]["en"],
         ["latitude"]       = lookup["location"]["latitude"],
         ["longitude"]      = lookup["location"]["longitude"],
+        ["accuracy"]       = lookup["location"]["accuracy_radius"],
+        ["timezone"]       = lookup["location"]["time_zone"],
         ["organization"]   = lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"]
     }
 
