@@ -428,7 +428,7 @@ end
 
 function _M.country_lookup(ip)
     -- Lookup IP
-    local lookup = geoip_lookup(ip)
+    local lookup = _M.geoip_lookup(ip)
     local res = {
         ["country"]   = lookup["country"]["iso_code"],
         ["country_3"] = lookup["country"]["iso_code3"],
