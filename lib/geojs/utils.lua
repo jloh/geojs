@@ -17,6 +17,10 @@ local log_level = {
     DEBUG  = ngx.DEBUG
 }
 
+local _M = {
+    _VERSION = "0.0.2"
+}
+
 local country_code_3 = {
     ["AD"] = "AND",
     ["AE"] = "ARE",
@@ -272,8 +276,24 @@ local country_code_3 = {
     ["AN"] = "ANT"
 }
 
-local _M = {
-    _VERSION = "0.0.2"
+local default_ip_lookup = {
+    ["city"] = {
+        ["names"] = {}
+    },
+    ["continent"] = {
+        ["names"] = {}
+    },
+    ["country"] = {
+      ["names"] = {}
+    },
+    ["location"] = {},
+    ["postal"] = {},
+    ["registered_country"] = {
+        ["names"] = {}
+    },
+    ["subdivisions"] = {{
+        ["names"] = {}
+    }}
 }
 
 local config = {
@@ -282,6 +302,61 @@ local config = {
         upstream = "http://127.0.0.1:8080",
     },
 }
+
+-- THe below two functions are taken from the ledge codebase under the 2-clause BSD license.
+-- This code was written by James Hurst james@pintsized.co.uk (https://github.com/pintsized/ledge)
+--
+-- Returns a new table, recursively copied from the one given, retaining
+-- metatable assignment.
+--
+-- @param   table   table to be copied
+-- @return  table
+local function tbl_copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == "table" then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[tbl_copy(orig_key)] = tbl_copy(orig_value)
+        end
+        setmetatable(copy, tbl_copy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+
+-- Returns a new table, recursively copied from the combination of the given
+-- table `t1`, with any missing fields copied from `defaults`.
+--
+-- If `defaults` is of type "fixed field" and `t1` contains a field name not
+-- present in the defults, an error will be thrown.
+--
+-- @param   table   t1
+-- @param   table   defaults
+-- @return  table   a new table, recursively copied and merged
+local function tbl_copy_merge_defaults(t1, defaults)
+    if t1 == nil then t1 = {} end
+    if defaults == nil then defaults = {} end
+    if type(t1) == "table" and type(defaults) == "table" then
+        local copy = {}
+        for t1_key, t1_value in next, t1, nil do
+            copy[tbl_copy(t1_key)] = tbl_copy_merge_defaults(
+                t1_value, tbl_copy(defaults[t1_key])
+            )
+        end
+        for defaults_key, defaults_value in next, defaults, nil do
+            if t1[defaults_key] == nil then
+                copy[tbl_copy(defaults_key)] = tbl_copy(defaults_value)
+            end
+        end
+        return copy
+    else
+        return t1 -- not a table
+    end
+end
+
 
 -- Splits strings!
 function _M.split(str, pat)
@@ -423,7 +498,8 @@ local function geoip_lookup(ip)
     -- Add 3 letter country code
     ip_data['country']["iso_code3"] = country_code_3[ip_geo['country']['iso_code']]
 
-    return ip_data
+    -- Copy in our defaults so if info is missing we fail gracefully
+    return tbl_copy_merge_defaults(ip_data, default_ip_lookup)
 end
 _M.geoip_lookup = geoip_lookup
 
@@ -444,14 +520,15 @@ function _M.geo_lookup(ip)
     local lookup = geoip_lookup(ip)
     local res = {
         ["ip"]             = ip,
+        ["area_code"]      = '0', -- depreciated but we should return a value
         ["country"]        = lookup["country"]["names"]["en"],
         ["country_code"]   = lookup["country"]["iso_code"],
         ["country_code3"]  = lookup["country"]["iso_code3"],
         ["continent_code"] = lookup["continent"]["code"],
         ["city"]           = lookup["city"]["names"]["en"],
         ["region"]         = lookup["subdivisions"][1]["names"]["en"],
-        ["latitude"]       = lookup["location"]["latitude"],
-        ["longitude"]      = lookup["location"]["longitude"],
+        ["latitude"]       = tostring(lookup["location"]["latitude"]), -- Sadly these two were an int at the start so can't be until v2
+        ["longitude"]      = tostring(lookup["location"]["longitude"]),
         ["accuracy"]       = lookup["location"]["accuracy_radius"],
         ["timezone"]       = lookup["location"]["time_zone"],
         ["organization"]   = 'AS' .. lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"]
