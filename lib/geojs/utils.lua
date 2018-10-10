@@ -531,7 +531,7 @@ function _M.geo_lookup(ip)
         ["longitude"]         = tostring(lookup["location"]["longitude"]),
         ["accuracy"]          = lookup["location"]["accuracy_radius"],
         ["timezone"]          = lookup["location"]["time_zone"],
-        ["organization"]      = 'AS' .. lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"],
+        ["organization"]      = 'AS' .. table.concat({lookup["autonomous_system_number"], lookup["autonomous_system_organization"]}, ' '),
         ["asn"]               = lookup["autonomous_system_number"],
         ["organization_name"] = lookup["autonomous_system_organization"]
     }
