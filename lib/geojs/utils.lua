@@ -519,19 +519,21 @@ function _M.geo_lookup(ip)
     -- Lookup IP
     local lookup = geoip_lookup(ip)
     local res = {
-        ["ip"]             = ip,
-        ["area_code"]      = '0', -- depreciated but we should return a value
-        ["country"]        = lookup["country"]["names"]["en"],
-        ["country_code"]   = lookup["country"]["iso_code"],
-        ["country_code3"]  = lookup["country"]["iso_code3"],
-        ["continent_code"] = lookup["continent"]["code"],
-        ["city"]           = lookup["city"]["names"]["en"],
-        ["region"]         = lookup["subdivisions"][1]["names"]["en"],
-        ["latitude"]       = tostring(lookup["location"]["latitude"]), -- Sadly these two were an int at the start so can't be until v2
-        ["longitude"]      = tostring(lookup["location"]["longitude"]),
-        ["accuracy"]       = lookup["location"]["accuracy_radius"],
-        ["timezone"]       = lookup["location"]["time_zone"],
-        ["organization"]   = 'AS' .. lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"]
+        ["ip"]                = ip,
+        ["area_code"]         = '0', -- depreciated but we should return a value
+        ["country"]           = lookup["country"]["names"]["en"],
+        ["country_code"]      = lookup["country"]["iso_code"],
+        ["country_code3"]     = lookup["country"]["iso_code3"],
+        ["continent_code"]    = lookup["continent"]["code"],
+        ["city"]              = lookup["city"]["names"]["en"],
+        ["region"]            = lookup["subdivisions"][1]["names"]["en"],
+        ["latitude"]          = tostring(lookup["location"]["latitude"]), -- Sadly these two were an int at the start so can't be until v2
+        ["longitude"]         = tostring(lookup["location"]["longitude"]),
+        ["accuracy"]          = lookup["location"]["accuracy_radius"],
+        ["timezone"]          = lookup["location"]["time_zone"],
+        ["organization"]      = 'AS' .. lookup["autonomous_system_number"] .. ' ' .. lookup["autonomous_system_organization"],
+        ["asn"]               = lookup["autonomous_system_number"],
+        ["organization_name"] = lookup["autonomous_system_organization"]
     }
 
     return res
