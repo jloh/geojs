@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jloh/geojs-tests:beta-0.0.5
+      - image: jloh/geojs-tests:beta-0.0.11
     steps:
       - checkout
       # We have to do it this way since wget'ing it lands us weird dir names
@@ -28,8 +28,11 @@ jobs:
             mkdir -p lib/resty
             curl -s -o lib/resty/maxminddb_asn.lua $MAXMIND_LUA_URL
       - run:
-          name: 'Nginx version'
-          command: nginx -V
+          name: 'Openresty version'
+          command: openresty -V
+      - run:
+          name: 'Link openresty for tests'
+          command: ln -s /usr/bin/openresty /usr/bin/nginx
       - run:
           name: 'Tests'
           command: prove -r t -a test_results.tgz

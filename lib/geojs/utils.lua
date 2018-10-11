@@ -276,7 +276,7 @@ local country_code_3 = {
     ["AN"] = "ANT"
 }
 
-local default_ip_lookup = {
+local default_geo_lookup = {
     ["city"] = {
         ["names"] = {}
     },
@@ -294,6 +294,11 @@ local default_ip_lookup = {
     ["subdivisions"] = {{
         ["names"] = {}
     }}
+}
+
+local default_asn_lookup = {
+    ["autonomous_system_number"] = 64512, -- Start of the private ASN block
+    ["autonomous_system_organization"] = "Unknown"
 }
 
 local config = {
@@ -490,16 +495,21 @@ local function geoip_lookup(ip)
     local ip_geo, ip_geo_err = geo.lookup(ip)
     local ip_asn, ip_asn_err = geo_asn.lookup(ip)
 
+    -- Copy in our default/fallback values
+    ip_geo = tbl_copy_merge_defaults(ip_geo, default_geo_lookup)
+    ip_asn = tbl_copy_merge_defaults(ip_asn, default_asn_lookup)
+
     local ip_data = {}
 
+    -- Merge our two tables
     for k,v in pairs(ip_geo) do ip_data[k] = v end
     for k,v in pairs(ip_asn) do ip_data[k] = v end
 
     -- Add 3 letter country code
-    ip_data['country']["iso_code3"] = country_code_3[ip_geo['country']['iso_code']]
+    if ip_data['country']['iso_code'] then ip_data['country']["iso_code3"] = country_code_3[ip_geo['country']['iso_code']] end
 
     -- Copy in our defaults so if info is missing we fail gracefully
-    return tbl_copy_merge_defaults(ip_data, default_ip_lookup)
+    return ip_data
 end
 _M.geoip_lookup = geoip_lookup
 
