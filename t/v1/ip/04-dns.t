@@ -11,10 +11,7 @@ our $HttpConfig = qq{
             require("luacov.runner").init()
         end
     }
-    geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
-    geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
-    geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
-    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;;";
+    lua_package_path "$pwd/lib/?.lua;;";
     real_ip_header X-IP;
     set_real_ip_from  127.0.0.1/32;
 

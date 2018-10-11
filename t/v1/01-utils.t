@@ -11,10 +11,7 @@ our $HttpConfig = qq{
             require("luacov.runner").init()
         end
     }
-    geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
-    geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
-    geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
-    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;$pwd/repos/lua-resty-http/lib/?.lua;$pwd/repos/lua-resty-iconv/lualib/?.lua;;";
+    lua_package_path "$pwd/lib/?.lua;;";
     real_ip_header X-IP;
     set_real_ip_from  127.0.0.1/32;
 };
@@ -95,7 +92,7 @@ test string
 "$::HttpConfig"
 --- config
     location /t {
-        set $geojs_dns_server '8.8.8.8';
+        set $geojs_dns_server '1.1.1.1';
         content_by_lua_block {
             local getptr = require("geojs.utils").get_ptr
             local ptr    = getptr('8.8.8.8')
@@ -133,7 +130,7 @@ Failed to query DNS servers
 "$::HttpConfig"
 --- config
     location /t {
-        set $geojs_dns_server '8.8.8.8';
+        set $geojs_dns_server '1.1.1.1';
         content_by_lua_block {
             local getptr = require("geojs.utils").get_ptr
             local ptr    = getptr('192.168.0.1')

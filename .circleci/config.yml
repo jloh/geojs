@@ -23,6 +23,11 @@ jobs:
             xiaooloong/lua-resty-iconv=0.2.0 \
             anjia0532/lua-resty-maxminddb=0.06
       - run:
+          name: 'Add in Maxmind ASN'
+          command: |
+            mkdir -p lib/resty
+            curl -s -o lib/resty/maxminddb_asn.lua $MAXMIND_LUA_URL
+      - run:
           name: 'Nginx version'
           command: nginx -V
       - run:
