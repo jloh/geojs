@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jloh/geojs-tests:beta-0.0.11
+      - image: jloh/geojs-tests:beta-0.0.12
     steps:
       - checkout
       # We have to do it this way since wget'ing it lands us weird dir names

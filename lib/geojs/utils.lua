@@ -479,7 +479,7 @@ end
 function init_dbs()
     -- Init our DBs if they haven't been
     if not geo.initted() then
-      geo.init("/usr/share/GeoIP/GeoLite2-City.mmdb")
+        geo.init("/usr/share/GeoIP/GeoLite2-City.mmdb")
     end
 
     if not geo_asn.initted() then
