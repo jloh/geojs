@@ -179,6 +179,7 @@ GET /t
 --- response_body chomp
 nil
 
+
 === TEST 9: Iconv encoding
 --- http_config eval
 "$::HttpConfig"
@@ -198,6 +199,7 @@ nil
 GET /t
 --- response_body chomp
 Ã0
+
 
 === TEST 10: Validate IPv4/IPv6 IPs
 --- http_config eval
@@ -224,6 +226,7 @@ GET /t
 --- response_body eval
 ["OK","OK"]
 
+
 === TEST 11: Fail on bad IPs
 --- http_config eval
 "$::HttpConfig"
@@ -248,3 +251,29 @@ GET /t
 [error]
 --- response_body eval
 ["OK","OK"]
+
+
+=== TEST 12: Test geo_lookup
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local geo_lookup = require("geojs.utils").geoip_lookup
+            local args       = ngx.req.get_uri_args()
+            local ip         = args.ip
+            local cjson      = require("cjson")
+
+            ngx.print(cjson.encode(geo_lookup(ip)))
+        }
+    }
+--- request eval
+["GET /t?ip=8.8.8.9",
+"GET /t?ip=2001:4860:4860::8888"]
+--- no_error_log
+[error]
+--- response_body eval
+['{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"accuracy_radius":1000,"longitude":-97.822},"autonomous_system_organization":"Google LLC"}','{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"accuracy_radius":100,"longitude":-97.822},"autonomous_system_organization":"Google LLC"}']
