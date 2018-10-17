@@ -72,6 +72,24 @@ Content-Type: text/plain
 google-public-dns-b.google.com
 
 
+=== TEST 2.c: Plain text endpoint specific IP
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/dns.conf";
+    set $geojs_dns_server '8.8.8.8';
+--- request
+GET /v1/dns/ptr/8.8.4.4
+--- more_headers
+X-IP: 8.8.8.8
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: text/plain
+--- response_body
+google-public-dns-b.google.com
+
+
 === TEST 3.a: JSON Endpoint
 --- http_config eval
 "$::HttpConfig"
@@ -108,6 +126,24 @@ Content-Type: application/json
 {"ptr":"google-public-dns-b.google.com"}
 
 
+=== TEST 3.c: JSON Endpoint specific IP
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/dns.conf";
+    set $geojs_dns_server '8.8.8.8';
+--- request
+GET /v1/dns/ptr/8.8.4.4.json
+--- more_headers
+X-IP: 8.8.8.8
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/json
+--- response_body
+{"ptr":"google-public-dns-b.google.com"}
+
+
 === TEST 4.a: JS Endpoint
 --- http_config eval
 "$::HttpConfig"
@@ -134,6 +170,24 @@ ptr({"ptr":"google-public-dns-a.google.com"})
     set $geojs_dns_server '8.8.8.8';
 --- request
 GET /v1/dns/ptr.js?ip=8.8.4.4
+--- more_headers
+X-IP: 8.8.8.8
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/javascript
+--- response_body
+ptr({"ptr":"google-public-dns-b.google.com"})
+
+
+=== TEST 4.c: JS Endpoint specific IP
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/dns.conf";
+    set $geojs_dns_server '8.8.8.8';
+--- request
+GET /v1/dns/ptr/8.8.4.4.js
 --- more_headers
 X-IP: 8.8.8.8
 --- no_error_log
