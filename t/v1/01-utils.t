@@ -11,10 +11,7 @@ our $HttpConfig = qq{
             require("luacov.runner").init()
         end
     }
-    geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
-    geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
-    geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
-    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;$pwd/repos/lua-resty-http/lib/?.lua;$pwd/repos/lua-resty-iconv/lualib/?.lua;;";
+    lua_package_path "$pwd/lib/?.lua;;";
     real_ip_header X-IP;
     set_real_ip_from  127.0.0.1/32;
 };
@@ -95,7 +92,7 @@ test string
 "$::HttpConfig"
 --- config
     location /t {
-        set $geojs_dns_server '8.8.8.8';
+        set $geojs_dns_server '1.1.1.1';
         content_by_lua_block {
             local getptr = require("geojs.utils").get_ptr
             local ptr    = getptr('8.8.8.8')
@@ -133,7 +130,7 @@ Failed to query DNS servers
 "$::HttpConfig"
 --- config
     location /t {
-        set $geojs_dns_server '8.8.8.8';
+        set $geojs_dns_server '1.1.1.1';
         content_by_lua_block {
             local getptr = require("geojs.utils").get_ptr
             local ptr    = getptr('192.168.0.1')
@@ -182,6 +179,7 @@ GET /t
 --- response_body chomp
 nil
 
+
 === TEST 9: Iconv encoding
 --- http_config eval
 "$::HttpConfig"
@@ -201,6 +199,7 @@ nil
 GET /t
 --- response_body chomp
 Ã0
+
 
 === TEST 10: Validate IPv4/IPv6 IPs
 --- http_config eval
@@ -227,6 +226,7 @@ GET /t
 --- response_body eval
 ["OK","OK"]
 
+
 === TEST 11: Fail on bad IPs
 --- http_config eval
 "$::HttpConfig"
@@ -251,3 +251,81 @@ GET /t
 [error]
 --- response_body eval
 ["OK","OK"]
+
+
+=== TEST 12: Test geoip_lookup
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local geoip_lookup = require("geojs.utils").geoip_lookup
+            local args       = ngx.req.get_uri_args()
+            local ip         = args.ip
+            local cjson      = require("cjson")
+
+            ngx.print(cjson.encode(geoip_lookup(ip)))
+        }
+    }
+--- request eval
+["GET /t?ip=8.8.8.9",
+"GET /t?ip=2001:4860:4860::8888"]
+--- no_error_log
+[error]
+--- response_body eval
+['{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"accuracy_radius":1000,"longitude":-97.822},"autonomous_system_organization":"Google LLC"}','{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"accuracy_radius":100,"longitude":-97.822},"autonomous_system_organization":"Google LLC"}']
+
+
+=== TEST 13: Test geo_lookup
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local geo_lookup = require("geojs.utils").geo_lookup
+            local args       = ngx.req.get_uri_args()
+            local ip         = args.ip
+            local cjson      = require("cjson")
+
+            ngx.print(cjson.encode(geo_lookup(ip)))
+        }
+    }
+--- request eval
+["GET /t?ip=8.8.8.8",
+"GET /t?ip=2001:4860:4860::8888"]
+--- no_error_log
+[error]
+--- response_body eval
+['{"organization_name":"Google LLC","accuracy":1000,"asn":15169,"organization":"AS15169 Google LLC","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}','{"organization_name":"Google LLC","accuracy":100,"asn":15169,"organization":"AS15169 Google LLC","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"2001:4860:4860::8888","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}']
+
+
+=== TEST 14: Test country_lookup
+--- http_config eval
+"$::HttpConfig"
+--- config
+    charset utf8;
+    location /t {
+        default_type text/plain;
+        charset utf-8;
+        content_by_lua_block {
+            local country_lookup = require("geojs.utils").country_lookup
+            local args           = ngx.req.get_uri_args()
+            local ip             = args.ip
+            local cjson          = require("cjson")
+
+            ngx.print(cjson.encode(country_lookup(ip)))
+        }
+    }
+--- request eval
+["GET /t?ip=8.8.8.8",
+"GET /t?ip=2001:4860:4860::8888"]
+--- no_error_log
+[error]
+--- response_body eval
+['{"country":"US","country_3":"USA","ip":"8.8.8.8","name":"United States"}', '{"country":"US","country_3":"USA","ip":"2001:4860:4860::8888","name":"United States"}']

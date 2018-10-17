@@ -2,6 +2,8 @@ local ngx_log    = ngx.log
 local ngx_var    = ngx.var
 local escape_uri = ngx.escape_uri
 local ngx_re     = ngx.re
+local geo        = require('resty.maxminddb')
+local geo_asn    = require('resty.maxminddb_asn')
 
 local log_level = {
     STDERR = ngx.STDERR,
@@ -16,7 +18,287 @@ local log_level = {
 }
 
 local _M = {
-    _VERSION = "0.0.1"
+    _VERSION = "0.0.2"
+}
+
+local country_code_3 = {
+    ["AD"] = "AND",
+    ["AE"] = "ARE",
+    ["AF"] = "AFG",
+    ["AG"] = "ATG",
+    ["AI"] = "AIA",
+    ["AL"] = "ALB",
+    ["AM"] = "ARM",
+    ["AO"] = "AGO",
+    ["AQ"] = "ATA",
+    ["AR"] = "ARG",
+    ["AS"] = "ASM",
+    ["AT"] = "AUT",
+    ["AU"] = "AUS",
+    ["AW"] = "ABW",
+    ["AX"] = "ALA",
+    ["AZ"] = "AZE",
+    ["BA"] = "BIH",
+    ["BB"] = "BRB",
+    ["BD"] = "BGD",
+    ["BE"] = "BEL",
+    ["BF"] = "BFA",
+    ["BG"] = "BGR",
+    ["BH"] = "BHR",
+    ["BI"] = "BDI",
+    ["BJ"] = "BEN",
+    ["BL"] = "BLM",
+    ["BM"] = "BMU",
+    ["BN"] = "BRN",
+    ["BO"] = "BOL",
+    ["BQ"] = "BES",
+    ["BR"] = "BRA",
+    ["BS"] = "BHS",
+    ["BT"] = "BTN",
+    ["BV"] = "BVT",
+    ["BW"] = "BWA",
+    ["BY"] = "BLR",
+    ["BZ"] = "BLZ",
+    ["CA"] = "CAN",
+    ["CC"] = "CCK",
+    ["CD"] = "COD",
+    ["CF"] = "CAF",
+    ["CG"] = "COG",
+    ["CH"] = "CHE",
+    ["CI"] = "CIV",
+    ["CK"] = "COK",
+    ["CL"] = "CHL",
+    ["CM"] = "CMR",
+    ["CN"] = "CHN",
+    ["CO"] = "COL",
+    ["CR"] = "CRI",
+    ["CU"] = "CUB",
+    ["CV"] = "CPV",
+    ["CW"] = "CUW",
+    ["CX"] = "CXR",
+    ["CY"] = "CYP",
+    ["CZ"] = "CZE",
+    ["DE"] = "DEU",
+    ["DJ"] = "DJI",
+    ["DK"] = "DNK",
+    ["DM"] = "DMA",
+    ["DO"] = "DOM",
+    ["DZ"] = "DZA",
+    ["EC"] = "ECU",
+    ["EE"] = "EST",
+    ["EG"] = "EGY",
+    ["EH"] = "ESH",
+    ["ER"] = "ERI",
+    ["ES"] = "ESP",
+    ["ET"] = "ETH",
+    ["FI"] = "FIN",
+    ["FJ"] = "FJI",
+    ["FK"] = "FLK",
+    ["FM"] = "FSM",
+    ["FO"] = "FRO",
+    ["FR"] = "FRA",
+    ["GA"] = "GAB",
+    ["GB"] = "GBR",
+    ["GD"] = "GRD",
+    ["GE"] = "GEO",
+    ["GF"] = "GUF",
+    ["GG"] = "GGY",
+    ["GH"] = "GHA",
+    ["GI"] = "GIB",
+    ["GL"] = "GRL",
+    ["GM"] = "GMB",
+    ["GN"] = "GIN",
+    ["GP"] = "GLP",
+    ["GQ"] = "GNQ",
+    ["GR"] = "GRC",
+    ["GS"] = "SGS",
+    ["GT"] = "GTM",
+    ["GU"] = "GUM",
+    ["GW"] = "GNB",
+    ["GY"] = "GUY",
+    ["HK"] = "HKG",
+    ["HM"] = "HMD",
+    ["HN"] = "HND",
+    ["HR"] = "HRV",
+    ["HT"] = "HTI",
+    ["HU"] = "HUN",
+    ["ID"] = "IDN",
+    ["IE"] = "IRL",
+    ["IL"] = "ISR",
+    ["IM"] = "IMN",
+    ["IN"] = "IND",
+    ["IO"] = "IOT",
+    ["IQ"] = "IRQ",
+    ["IR"] = "IRN",
+    ["IS"] = "ISL",
+    ["IT"] = "ITA",
+    ["JE"] = "JEY",
+    ["JM"] = "JAM",
+    ["JO"] = "JOR",
+    ["JP"] = "JPN",
+    ["KE"] = "KEN",
+    ["KG"] = "KGZ",
+    ["KH"] = "KHM",
+    ["KI"] = "KIR",
+    ["KM"] = "COM",
+    ["KN"] = "KNA",
+    ["KP"] = "PRK",
+    ["KR"] = "KOR",
+    ["XK"] = "XKX",
+    ["KW"] = "KWT",
+    ["KY"] = "CYM",
+    ["KZ"] = "KAZ",
+    ["LA"] = "LAO",
+    ["LB"] = "LBN",
+    ["LC"] = "LCA",
+    ["LI"] = "LIE",
+    ["LK"] = "LKA",
+    ["LR"] = "LBR",
+    ["LS"] = "LSO",
+    ["LT"] = "LTU",
+    ["LU"] = "LUX",
+    ["LV"] = "LVA",
+    ["LY"] = "LBY",
+    ["MA"] = "MAR",
+    ["MC"] = "MCO",
+    ["MD"] = "MDA",
+    ["ME"] = "MNE",
+    ["MF"] = "MAF",
+    ["MG"] = "MDG",
+    ["MH"] = "MHL",
+    ["MK"] = "MKD",
+    ["ML"] = "MLI",
+    ["MM"] = "MMR",
+    ["MN"] = "MNG",
+    ["MO"] = "MAC",
+    ["MP"] = "MNP",
+    ["MQ"] = "MTQ",
+    ["MR"] = "MRT",
+    ["MS"] = "MSR",
+    ["MT"] = "MLT",
+    ["MU"] = "MUS",
+    ["MV"] = "MDV",
+    ["MW"] = "MWI",
+    ["MX"] = "MEX",
+    ["MY"] = "MYS",
+    ["MZ"] = "MOZ",
+    ["NA"] = "NAM",
+    ["NC"] = "NCL",
+    ["NE"] = "NER",
+    ["NF"] = "NFK",
+    ["NG"] = "NGA",
+    ["NI"] = "NIC",
+    ["NL"] = "NLD",
+    ["NO"] = "NOR",
+    ["NP"] = "NPL",
+    ["NR"] = "NRU",
+    ["NU"] = "NIU",
+    ["NZ"] = "NZL",
+    ["OM"] = "OMN",
+    ["PA"] = "PAN",
+    ["PE"] = "PER",
+    ["PF"] = "PYF",
+    ["PG"] = "PNG",
+    ["PH"] = "PHL",
+    ["PK"] = "PAK",
+    ["PL"] = "POL",
+    ["PM"] = "SPM",
+    ["PN"] = "PCN",
+    ["PR"] = "PRI",
+    ["PS"] = "PSE",
+    ["PT"] = "PRT",
+    ["PW"] = "PLW",
+    ["PY"] = "PRY",
+    ["QA"] = "QAT",
+    ["RE"] = "REU",
+    ["RO"] = "ROU",
+    ["RS"] = "SRB",
+    ["RU"] = "RUS",
+    ["RW"] = "RWA",
+    ["SA"] = "SAU",
+    ["SB"] = "SLB",
+    ["SC"] = "SYC",
+    ["SD"] = "SDN",
+    ["SS"] = "SSD",
+    ["SE"] = "SWE",
+    ["SG"] = "SGP",
+    ["SH"] = "SHN",
+    ["SI"] = "SVN",
+    ["SJ"] = "SJM",
+    ["SK"] = "SVK",
+    ["SL"] = "SLE",
+    ["SM"] = "SMR",
+    ["SN"] = "SEN",
+    ["SO"] = "SOM",
+    ["SR"] = "SUR",
+    ["ST"] = "STP",
+    ["SV"] = "SLV",
+    ["SX"] = "SXM",
+    ["SY"] = "SYR",
+    ["SZ"] = "SWZ",
+    ["TC"] = "TCA",
+    ["TD"] = "TCD",
+    ["TF"] = "ATF",
+    ["TG"] = "TGO",
+    ["TH"] = "THA",
+    ["TJ"] = "TJK",
+    ["TK"] = "TKL",
+    ["TL"] = "TLS",
+    ["TM"] = "TKM",
+    ["TN"] = "TUN",
+    ["TO"] = "TON",
+    ["TR"] = "TUR",
+    ["TT"] = "TTO",
+    ["TV"] = "TUV",
+    ["TW"] = "TWN",
+    ["TZ"] = "TZA",
+    ["UA"] = "UKR",
+    ["UG"] = "UGA",
+    ["UM"] = "UMI",
+    ["US"] = "USA",
+    ["UY"] = "URY",
+    ["UZ"] = "UZB",
+    ["VA"] = "VAT",
+    ["VC"] = "VCT",
+    ["VE"] = "VEN",
+    ["VG"] = "VGB",
+    ["VI"] = "VIR",
+    ["VN"] = "VNM",
+    ["VU"] = "VUT",
+    ["WF"] = "WLF",
+    ["WS"] = "WSM",
+    ["YE"] = "YEM",
+    ["YT"] = "MYT",
+    ["ZA"] = "ZAF",
+    ["ZM"] = "ZMB",
+    ["ZW"] = "ZWE",
+    ["CS"] = "SCG",
+    ["AN"] = "ANT"
+}
+
+local default_geo_lookup = {
+    ["city"] = {
+        ["names"] = {}
+    },
+    ["continent"] = {
+        ["names"] = {}
+    },
+    ["country"] = {
+      ["names"] = {}
+    },
+    ["location"] = {},
+    ["postal"] = {},
+    ["registered_country"] = {
+        ["names"] = {}
+    },
+    ["subdivisions"] = {{
+        ["names"] = {}
+    }}
+}
+
+local default_asn_lookup = {
+    ["autonomous_system_number"] = 64512, -- Start of the private ASN block
+    ["autonomous_system_organization"] = "Unknown"
 }
 
 local config = {
@@ -25,6 +307,61 @@ local config = {
         upstream = "http://127.0.0.1:8080",
     },
 }
+
+-- THe below two functions are taken from the ledge codebase under the 2-clause BSD license.
+-- This code was written by James Hurst james@pintsized.co.uk (https://github.com/pintsized/ledge)
+--
+-- Returns a new table, recursively copied from the one given, retaining
+-- metatable assignment.
+--
+-- @param   table   table to be copied
+-- @return  table
+local function tbl_copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == "table" then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[tbl_copy(orig_key)] = tbl_copy(orig_value)
+        end
+        setmetatable(copy, tbl_copy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+
+-- Returns a new table, recursively copied from the combination of the given
+-- table `t1`, with any missing fields copied from `defaults`.
+--
+-- If `defaults` is of type "fixed field" and `t1` contains a field name not
+-- present in the defults, an error will be thrown.
+--
+-- @param   table   t1
+-- @param   table   defaults
+-- @return  table   a new table, recursively copied and merged
+local function tbl_copy_merge_defaults(t1, defaults)
+    if t1 == nil then t1 = {} end
+    if defaults == nil then defaults = {} end
+    if type(t1) == "table" and type(defaults) == "table" then
+        local copy = {}
+        for t1_key, t1_value in next, t1, nil do
+            copy[tbl_copy(t1_key)] = tbl_copy_merge_defaults(
+                t1_value, tbl_copy(defaults[t1_key])
+            )
+        end
+        for defaults_key, defaults_value in next, defaults, nil do
+            if t1[defaults_key] == nil then
+                copy[tbl_copy(defaults_key)] = tbl_copy(defaults_value)
+            end
+        end
+        return copy
+    else
+        return t1 -- not a table
+    end
+end
+
 
 -- Splits strings!
 function _M.split(str, pat)
@@ -83,14 +420,14 @@ end
 
 -- Makes requests to our upstream server
 function _M.upstream_req(reqpath, ip)
-	local http  = require "resty.http"
+    local http  = require "resty.http"
     local httpc = http.new()
     local uri   = config.http.upstream .. reqpath
     local res, err = httpc:request_uri(uri, {
         method  = "GET",
         headers = {
             ["X-Real-IP"] = ip,
-	    	["Host"]      = "get.geojs.io",
+            ["Host"]      = "get.geojs.io",
         }
     })
 
@@ -135,6 +472,81 @@ function _M.generate_callback(default, req_args)
         callback = default
     end
     return callback
+end
+
+-- Maxmind DB implemntation
+
+function init_dbs()
+    -- Init our DBs if they haven't been
+    if not geo.initted() then
+        geo.init("/usr/share/GeoIP/GeoLite2-City.mmdb")
+    end
+
+    if not geo_asn.initted() then
+        geo_asn.init("/usr/share/GeoIP/GeoLite2-ASN.mmdb")
+    end
+end
+
+local function geoip_lookup(ip)
+    -- Ensure DBs are init'd
+    init_dbs()
+
+    -- Lookup Geo data
+    local ip_geo, ip_geo_err = geo.lookup(ip)
+    local ip_asn, ip_asn_err = geo_asn.lookup(ip)
+
+    -- Copy in our default/fallback values
+    ip_geo = tbl_copy_merge_defaults(ip_geo, default_geo_lookup)
+    ip_asn = tbl_copy_merge_defaults(ip_asn, default_asn_lookup)
+
+    local ip_data = {}
+
+    -- Merge our two tables
+    for k,v in pairs(ip_geo) do ip_data[k] = v end
+    for k,v in pairs(ip_asn) do ip_data[k] = v end
+
+    -- Add 3 letter country code
+    if ip_data['country']['iso_code'] then ip_data['country']["iso_code3"] = country_code_3[ip_geo['country']['iso_code']] end
+
+    -- Copy in our defaults so if info is missing we fail gracefully
+    return ip_data
+end
+_M.geoip_lookup = geoip_lookup
+
+function _M.country_lookup(ip)
+    -- Lookup IP
+    local lookup = geoip_lookup(ip)
+    local res = {
+        ["country"]   = lookup["country"]["iso_code"],
+        ["country_3"] = lookup["country"]["iso_code3"],
+        ["ip"]        = ip,
+        ["name"]      = lookup["country"]["names"]["en"]
+    }
+    return res
+end
+
+function _M.geo_lookup(ip)
+    -- Lookup IP
+    local lookup = geoip_lookup(ip)
+    local res = {
+        ["ip"]                = ip,
+        ["area_code"]         = '0', -- depreciated but we should return a value
+        ["country"]           = lookup["country"]["names"]["en"],
+        ["country_code"]      = lookup["country"]["iso_code"],
+        ["country_code3"]     = lookup["country"]["iso_code3"],
+        ["continent_code"]    = lookup["continent"]["code"],
+        ["city"]              = lookup["city"]["names"]["en"],
+        ["region"]            = lookup["subdivisions"][1]["names"]["en"],
+        ["latitude"]          = tostring(lookup["location"]["latitude"]), -- Sadly these two were an int at the start so can't be until v2
+        ["longitude"]         = tostring(lookup["location"]["longitude"]),
+        ["accuracy"]          = lookup["location"]["accuracy_radius"],
+        ["timezone"]          = lookup["location"]["time_zone"],
+        ["organization"]      = 'AS' .. table.concat({lookup["autonomous_system_number"], lookup["autonomous_system_organization"]}, ' '),
+        ["asn"]               = lookup["autonomous_system_number"],
+        ["organization_name"] = lookup["autonomous_system_organization"]
+    }
+
+    return res
 end
 
 return _M

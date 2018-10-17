@@ -11,10 +11,7 @@ our $HttpConfig = qq{
             require("luacov.runner").init()
         end
     }
-    geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
-    geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
-    geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
-    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;$pwd/repos/lua-resty-http/lib/?.lua;$pwd/repos/lua-resty-iconv/lualib/?.lua;$pwd/repos/lua-resty-reqargs/lib/?.lua;$pwd/repos/lua-resty-upload/lib/?.lua;;";
+    lua_package_path "$pwd/lib/?.lua;;";
     real_ip_header X-Real-IP;
     set_real_ip_from  127.0.0.1/32;
 };
@@ -83,7 +80,7 @@ Content-type: application/x-www-form-urlencoded
 --- no_error_log
 [error]
 --- response_body
-{"attachments":[{"text":"Hmmm. Looks like you've given us a bad IP (`google.com`). This command only accepts IPs (IPv6 or IPv4) for now, sorry!","mrkdwn_in":["text"],"fallback":"Hmmm. Looks like you've given us a bad IP. This command only accepts IPs (IPv6 or IPv4) for now, sorry!","color":"danger"}]}
+{"attachments":[{"text":"Hmmm. Looks like you've given us a bad IP (`google.com`). This command only accepts IPs (IPv6 or IPv4) for now, sorry!","fallback":"Hmmm. Looks like you've given us a bad IP. This command only accepts IPs (IPv6 or IPv4) for now, sorry!","color":"danger","mrkdwn_in":["text"]}]}
 
 === TEST 4: Help command
 --- http_config eval

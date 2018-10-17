@@ -11,10 +11,7 @@ our $HttpConfig = qq{
             require("luacov.runner").init()
         end
     }
-    geoip_country "$pwd/download-cache/maxmind/GeoIPv6.dat";
-    geoip_city "$pwd/download-cache/maxmind/GeoLiteCityv6.dat";
-    geoip_org "$pwd/download-cache/maxmind/GeoIPASNumv6.dat";
-    lua_package_path "$pwd/lib/?.lua;$pwd/repos/lua-resty-dns/lib/?.lua;$pwd/repos/lua-resty-http/lib/?.lua;$pwd/repos/lua-resty-iconv/lualib/?.lua;$pwd/repos/lua-resty-reqargs/lib/?.lua;$pwd/repos/lua-resty-upload/lib/?.lua;;";
+    lua_package_path "$pwd/lib/?.lua;;";
     real_ip_header X-Real-IP;
     set_real_ip_from  127.0.0.1/32;
 };
@@ -50,7 +47,7 @@ Content-type: application/x-www-form-urlencoded
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"content":"### IP information for **8.8.8.8**\nPTR: `google-public-dns-a.google.com`\nCountry: United States\nOrganization: AS15169 Google LLC\nPowered by [GeoJS](https:\/\/geojs.io)"}
+{"content":"### IP information for **8.8.8.8**\nPTR: `google-public-dns-a.google.com`\nCountry: United States\nOrganization: Google LLC\nPowered by [GeoJS](https:\/\/geojs.io)"}
 
 === TEST 2: Bad token
 --- http_config eval
