@@ -21,7 +21,7 @@ jobs:
             openresty/lua-resty-upload=0.10 \
             bungle/lua-resty-reqargs=1.4 \
             xiaooloong/lua-resty-iconv=0.2.0 \
-            anjia0532/lua-resty-maxminddb=0.06
+            anjia0532/lua-resty-maxminddb=v1.3.0
       - run:
           name: 'Add in Maxmind ASN'
           command: |
