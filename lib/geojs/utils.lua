@@ -361,6 +361,7 @@ local function tbl_copy_merge_defaults(t1, defaults)
         return t1 -- not a table
     end
 end
+_M.tbl_copy_merge_defaults = tbl_copy_merge_defaults
 
 
 -- Splits strings!
