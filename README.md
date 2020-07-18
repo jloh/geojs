@@ -6,8 +6,6 @@
 
  [![](https://img.shields.io/circleci/project/github/jloh/geojs.svg)](https://circleci.com/gh/jloh/geojs) [![Coverage Status](https://coveralls.io/repos/github/jloh/geojs/badge.svg?branch=master)](https://coveralls.io/github/jloh/geojs?branch=master) ![](https://img.shields.io/github/release/jloh/geojs.svg) ![](https://img.shields.io/github/license/jloh/geojs.svg) [![](https://img.shields.io/gitter/room/jloh/geojs.svg?logo=gitter-white)](https://gitter.im/jloh/geojs)
 
- [![](https://img.shields.io/badge/slack-app-E01765.svg)](https://jloh.slack.com/apps/A6WCHU48J-geojs) [![](https://img.shields.io/badge/twist-app-46bc99.svg)](https://twistapp.com/integrations/install/198_a1a4dc4678cb01d89cdc4533) [![](https://img.shields.io/badge/hipchat-app-003366.svg)](https://marketplace.atlassian.com/plugins/com.jloh.geojs/server/overview)
-
 ## Introduction
 
 GeoJS is a geo-location lookup API supporting plain text, JSON and JSONP endpoints. It also has [ChatOps integration](https://geojs.io/docs/chatops/) and a PTR endpoint. With full CORS support GeoJS can be integrated into any frontend or backend app easily.
@@ -41,21 +39,13 @@ US
 
 Checkout the GeoJS [web app](https://app.geojs.io) for a real world example.
 
-GeoJS has a free unlimited production instance running at [get.geojs.io](https://get.geojs.io/v1/ip) however if you need to host an instance yourself follow on below.
-
-ToDo!
-
-## Contributing
-
-We use [Waffle](https://waffle.io/jloh/geojs) to track our work, feel free to tackle anything in the _To Do_ column.
-
-Pull requests are warmly welcome!
+GeoJS has a free unlimited production instance running at [get.geojs.io](https://get.geojs.io/v1/ip).
 
 ## Sponsors
 
-GeoJS runs on Digital Ocean's cloud computing platform. Use the link below to get $10 on signup and support GeoJS going forward.
+GeoJS is powered by the DigitalOcean cloud and wouldn't be possible without them. Use our [referral link](https://m.do.co/c/2c9ab4daaa8d) to get $10 free credit upon signup. We'd also like to thank [DNS Spy](https://www.dnsspy.io/?ref=geojs.io ) who continually monitor our DNS infrastructure to ensure that users can reach GeoJS. Finally we want to thank Cloudflare who power our frontend traffic and enable us to cache our heavily dynamic API.
 
- [![Digital Ocean](https://geojs.io/img/DO_Logo_horizontal_blue.svg)](https://m.do.co/c/2c9ab4daaa8d/)
+![](https://geojs.io/img/DO_Logo_horizontal_blue.svg)
 
 ## Licence
 
