@@ -11,6 +11,7 @@ jobs:
           command: |
             mkdir -p download-cache/maxmind2
             cp .circleci/Geoip.conf /etc/GeoIP.conf
+            echo "AccountID $MAXMIND_ACCOUNT_ID" >> /etc/GeoIP.conf
             echo "LicenseKey $MAXMIND_TOKEN" >> /etc/GeoIP.conf
             geoipupdate -v
       - run:
