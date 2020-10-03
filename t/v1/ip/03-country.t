@@ -16,6 +16,8 @@ our $HttpConfig = qq{
     set_real_ip_from  127.0.0.1/32;
 };
 
+no_long_string();
+no_diff();
 run_tests();
 
 __DATA__

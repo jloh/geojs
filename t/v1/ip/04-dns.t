@@ -17,6 +17,8 @@ our $HttpConfig = qq{
 
 };
 
+no_long_string();
+no_diff();
 run_tests();
 
 __DATA__
@@ -51,7 +53,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: text/plain
 --- response_body
-google-public-dns-a.google.com
+dns.google
 
 
 === TEST 2.b: Plain text endpoint IP arg
@@ -69,7 +71,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: text/plain
 --- response_body
-google-public-dns-b.google.com
+dns.google
 
 
 === TEST 2.c: Plain text endpoint specific IP
@@ -87,7 +89,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: text/plain
 --- response_body
-google-public-dns-b.google.com
+dns.google
 
 
 === TEST 3.a: JSON Endpoint
@@ -105,7 +107,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"ptr":"google-public-dns-a.google.com"}
+{"ptr":"dns.google"}
 
 
 === TEST 3.b: JSON Endpoint IP arg
@@ -123,7 +125,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"ptr":"google-public-dns-b.google.com"}
+{"ptr":"dns.google"}
 
 
 === TEST 3.c: JSON Endpoint specific IP
@@ -141,7 +143,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"ptr":"google-public-dns-b.google.com"}
+{"ptr":"dns.google"}
 
 
 === TEST 4.a: JS Endpoint
@@ -159,7 +161,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-ptr({"ptr":"google-public-dns-a.google.com"})
+ptr({"ptr":"dns.google"})
 
 
 === TEST 4.b: JS Endpoint IP arg
@@ -177,7 +179,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-ptr({"ptr":"google-public-dns-b.google.com"})
+ptr({"ptr":"dns.google"})
 
 
 === TEST 4.c: JS Endpoint specific IP
@@ -195,4 +197,4 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-ptr({"ptr":"google-public-dns-b.google.com"})
+ptr({"ptr":"dns.google"})
