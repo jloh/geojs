@@ -104,6 +104,8 @@ our $BadJSONPayload = qq{
     }
 };
 
+no_long_string();
+no_diff();
 run_tests();
 
 __DATA__
@@ -124,7 +126,7 @@ $::JSONPayload"
 --- no_error_log
 [error]
 --- response_body
-{"notify":"False","message_format":"html","card":{"icon":{"url":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/us.png","url@2x":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/2x\/us.png"},"title":"GeoIP results for 8.8.8.8","activity":{"html":"<strong>8.8.8.8<\/strong> is a United States IP belonging to Google LLC"},"id":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx","description":{"value":"<strong>PTR:<\/strong> google-public-dns-a.google.com","format":"html"},"attributes":[{"label":"Powered by","value":{"label":"GeoJS","url":"https:\/\/geojs.io"}}],"style":"application","format":"medium"},"message":"Results for <b>8.8.8.8<\/b><br><br>PTR: google-public-dns-a.google.com<br>Country: United States<br>Organization: Google LLC<br><br>Powered by <a href=\"https:\/\/geojs.io\" title=\"GeoJS\">GeoJS<\/a>"}
+{"notify":"False","message_format":"html","card":{"icon":{"url":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/us.png","url@2x":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/2x\/us.png"},"title":"GeoIP results for 8.8.8.8","activity":{"html":"<strong>8.8.8.8<\/strong> is a United States IP belonging to GOOGLE"},"id":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx","description":{"value":"<strong>PTR:<\/strong> dns.google","format":"html"},"attributes":[{"label":"Powered by","value":{"label":"GeoJS","url":"https:\/\/geojs.io"}}],"style":"application","format":"medium"},"message":"Results for <b>8.8.8.8<\/b><br><br>PTR: dns.google<br>Country: United States<br>Organization: GOOGLE<br><br>Powered by <a href=\"https:\/\/geojs.io\" title=\"GeoJS\">GeoJS<\/a>"}
 
 === TEST 2: Webhook without a valid IP
 --- http_config eval

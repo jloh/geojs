@@ -23,6 +23,8 @@ our $UpstreamConfig = qq{
     }
 };
 
+no_long_string();
+no_diff();
 run_tests();
 
 __DATA__

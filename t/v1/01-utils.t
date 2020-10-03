@@ -25,6 +25,8 @@ our $UpstreamConfig = qq{
     }
 };
 
+no_long_string();
+no_diff();
 run_tests();
 
 __DATA__
@@ -104,7 +106,7 @@ GET /t
 --- no_error_log
 [error]
 --- response_body
-google-public-dns-a.google.com
+dns.google
 
 
 === TEST 5: Bad DNS server
@@ -276,7 +278,7 @@ GET /t
 --- no_error_log
 [error]
 --- response_body eval
-['{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"accuracy_radius":1000,"longitude":-97.822},"autonomous_system_organization":"Google LLC"}','{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"accuracy_radius":100,"longitude":-97.822},"autonomous_system_organization":"Google LLC"}']
+['{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"time_zone":"America\/Chicago","accuracy_radius":1000,"longitude":-97.822},"autonomous_system_organization":"GOOGLE"}','{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"time_zone":"America\/Chicago","accuracy_radius":100,"longitude":-97.822},"autonomous_system_organization":"GOOGLE"}']
 
 
 === TEST 13: Test geo_lookup
@@ -302,7 +304,7 @@ GET /t
 --- no_error_log
 [error]
 --- response_body eval
-['{"organization_name":"Google LLC","accuracy":1000,"asn":15169,"organization":"AS15169 Google LLC","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}','{"organization_name":"Google LLC","accuracy":100,"asn":15169,"organization":"AS15169 Google LLC","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"2001:4860:4860::8888","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}']
+['{"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}','{"organization_name":"GOOGLE","accuracy":100,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"2001:4860:4860::8888","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}']
 
 
 === TEST 14: Test country_lookup
