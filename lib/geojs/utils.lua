@@ -145,8 +145,8 @@ function _M.get_ptr(ip)
         timeout = 2000,  -- 2 sec
     }
     if not r then
-        ngx_log(log_level.ERR, "failed to instantiate the resolver: ", err)
-        return nill
+        ngx_log(log_level.ERR, "failed to initiate the resolver: ", err)
+        return nil
     end
     local answers, err = r:reverse_query(ip)
     if not answers then
