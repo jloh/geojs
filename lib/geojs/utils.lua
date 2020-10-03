@@ -202,8 +202,8 @@ end
 
 function _M.validate_ip(ip)
     -- Should match 8.8.8.8
-    local regex = [[^((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$]]
-    local m, err = ngx_re.match(ip, regex)
+    local regex = [[^((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$]] -- luacheck: ignore 631
+    local m, _ = ngx_re.match(ip, regex)
     if m then
         return true
     else
@@ -255,7 +255,7 @@ local function geoip_lookup(ip)
     for k,v in pairs(ip_asn) do ip_data[k] = v end
 
     -- Add 3 letter country code
-    if ip_data['country']['iso_code'] then ip_data['country']["iso_code3"] = codes.country_code_3[ip_geo['country']['iso_code']] end
+    if ip_data['country']['iso_code'] then ip_data['country']["iso_code3"] = codes.country_code_3[ip_geo['country']['iso_code']] end -- luacheck: ignore 631
 
     -- Copy in our defaults so if info is missing we fail gracefully
     return ip_data
@@ -286,11 +286,11 @@ function _M.geo_lookup(ip)
         ["continent_code"]    = lookup["continent"]["code"],
         ["city"]              = lookup["city"]["names"]["en"],
         ["region"]            = lookup["subdivisions"][1]["names"]["en"],
-        ["latitude"]          = tostring(lookup["location"]["latitude"]), -- Sadly these two were an int at the start so can't be until v2
+        ["latitude"]          = tostring(lookup["location"]["latitude"]), -- luacheck: ignore 631 Sadly these two were an int at the start so can't be until v2
         ["longitude"]         = tostring(lookup["location"]["longitude"]),
         ["accuracy"]          = lookup["location"]["accuracy_radius"],
         ["timezone"]          = lookup["location"]["time_zone"],
-        ["organization"]      = 'AS' .. table.concat({lookup["autonomous_system_number"], lookup["autonomous_system_organization"]}, ' '),
+        ["organization"]      = 'AS' .. table.concat({lookup["autonomous_system_number"], lookup["autonomous_system_organization"]}, ' '), -- luacheck: ignore 631
         ["asn"]               = lookup["autonomous_system_number"],
         ["organization_name"] = lookup["autonomous_system_organization"]
     }
