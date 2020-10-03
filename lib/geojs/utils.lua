@@ -1,5 +1,4 @@
 local ngx_log    = ngx.log
-local ngx_var    = ngx.var
 local escape_uri = ngx.escape_uri
 local ngx_re     = ngx.re
 local geo        = require('resty.maxminddb')
