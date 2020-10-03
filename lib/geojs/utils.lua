@@ -235,8 +235,14 @@ local function geoip_lookup(ip)
     end
 
     -- Lookup Geo data
-    local ip_geo, _ = geo.lookup(ip)
-    local ip_asn, _ = geo_asn.lookup(ip)
+    local ip_geo, ip_geo_err = geo.lookup(ip)
+    local ip_asn, ip_asn_err = geo_asn.lookup(ip)
+    if ip_geo_err then
+        ngx_log(log_level.ERR, "Error with Geo DB: ", ip_geo_err)
+    end
+    if ip_asn_err then
+        ngx_log(log_level.ERR, "Error with ASN DB: ", ip_asn_err)
+    end
 
     -- Copy in our default/fallback values
     ip_geo = tbl_copy_merge_defaults(ip_geo, default_geo_lookup)
