@@ -30,7 +30,7 @@ local default_geo_lookup = {
         ["names"] = {}
     },
     ["country"] = {
-      ["names"] = {}
+        ["names"] = {}
     },
     ["location"] = {},
     ["postal"] = {},
@@ -159,7 +159,8 @@ function _M.get_ptr(ip)
             ": ", answers.errstr)
         return 'Failed to get PTR record'
     end
-    for i, ans in ipairs(answers) do
+    local ptr
+    for _, ans in ipairs(answers) do
         ptr = ans.ptrdname
     end
     return ptr
@@ -191,7 +192,7 @@ function _M.to_utf8(string)
     local from  = 'iso-8859-15'
     local to    = 'utf-8'
 
-    local i, err = iconv:new("utf-8","iso-8859-15")
+    local i, err = iconv:new(to, from)
     if not i then
         ngx_log(log_level.ERR, "failed to initiate iconv: ", err)
         return string
@@ -213,6 +214,7 @@ end
 -- Generates callbacks
 -- Most important part is it escapes them from possibly dodgy content
 function _M.generate_callback(default, req_args)
+    local callback
     if req_args.callback then
         callback = escape_uri(req_args.callback)
     else
@@ -222,8 +224,7 @@ function _M.generate_callback(default, req_args)
 end
 
 -- Maxmind DB implemntation
-
-function init_dbs()
+local function geoip_lookup(ip)
     -- Init our DBs if they haven't been
     if not geo.initted() then
         geo.init("/usr/share/GeoIP/GeoLite2-City.mmdb")
@@ -232,15 +233,10 @@ function init_dbs()
     if not geo_asn.initted() then
         geo_asn.init("/usr/share/GeoIP/GeoLite2-ASN.mmdb")
     end
-end
-
-local function geoip_lookup(ip)
-    -- Ensure DBs are init'd
-    init_dbs()
 
     -- Lookup Geo data
-    local ip_geo, ip_geo_err = geo.lookup(ip)
-    local ip_asn, ip_asn_err = geo_asn.lookup(ip)
+    local ip_geo, _ = geo.lookup(ip)
+    local ip_asn, _ = geo_asn.lookup(ip)
 
     -- Copy in our default/fallback values
     ip_geo = tbl_copy_merge_defaults(ip_geo, default_geo_lookup)
