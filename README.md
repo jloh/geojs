@@ -56,7 +56,7 @@ GeoJS is powered by the DigitalOcean cloud and wouldn't be possible without them
 ```text
 MIT License
 
-Copyright (c) 2017-2021 James Loh
+Copyright (c) 2017-2022 James Loh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
