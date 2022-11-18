@@ -1,8 +1,6 @@
 local ngx_log    = ngx.log
 local escape_uri = ngx.escape_uri
 local ngx_re     = ngx.re
-local geo        = require('resty.maxminddb')
-local geo_asn    = require('resty.maxminddb_asn')
 local codes      = require('geojs.codes')
 
 local log_level = {
@@ -224,6 +222,8 @@ end
 
 -- Maxmind DB implemntation
 local function geoip_lookup(ip)
+    local geo        = require('resty.maxminddb')
+    local geo_asn    = require('resty.maxminddb_asn')
     -- Init our DBs if they haven't been
     if not geo.initted() then
         geo.init("/usr/share/GeoIP/GeoLite2-City.mmdb")
