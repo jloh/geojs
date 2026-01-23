@@ -4,7 +4,7 @@
 
  A highly available backendless geo-location lookup API
 
- [![](https://img.shields.io/circleci/project/github/jloh/geojs.svg)](https://circleci.com/gh/jloh/geojs) [![Coverage Status](https://coveralls.io/repos/github/jloh/geojs/badge.svg?branch=master)](https://coveralls.io/github/jloh/geojs?branch=master) ![](https://img.shields.io/github/release/jloh/geojs.svg) ![](https://img.shields.io/github/license/jloh/geojs.svg) [![](https://img.shields.io/gitter/room/jloh/geojs.svg?logo=gitter-white)](https://gitter.im/jloh/geojs)
+ [![Tests](https://github.com/jloh/geojs/actions/workflows/test.yml/badge.svg)](https://github.com/jloh/geojs/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/jloh/geojs/badge.svg?branch=master)](https://coveralls.io/github/jloh/geojs?branch=master) ![](https://img.shields.io/github/release/jloh/geojs.svg) ![](https://img.shields.io/github/license/jloh/geojs.svg) 
 
 ## Introduction
 
@@ -56,7 +56,7 @@ GeoJS is powered by the DigitalOcean cloud and wouldn't be possible without them
 ```text
 MIT License
 
-Copyright (c) 2017-2022 James Loh
+Copyright (c) 2017-2026 James Loh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
