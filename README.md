@@ -47,11 +47,8 @@ GeoJS has a free unlimited production instance running at [get.geojs.io](https:/
 
 ## Sponsors
 
-GeoJS is powered by the DigitalOcean cloud and wouldn't be possible without them. Use our [referral link](https://m.do.co/c/2c9ab4daaa8d) to get $10 free credit upon signup. We'd also like to thank [DNS Spy](https://www.dnsspy.io/?ref=geojs.io ) who continually monitor our DNS infrastructure to ensure that users can reach GeoJS. Finally we want to thank Cloudflare who power our frontend traffic and enable us to cache our heavily dynamic API.
+GeoJS is powered by the Hetzner cloud and wouldn't be possible without them. Use our [referral link](https://hetzner.cloud/?ref=pEps0I92NU57) to get €20 free credit upon signup. We'd also like to thank [DNS Spy](https://www.dnsspy.io/?ref=geojs.io ) who continually monitor our DNS infrastructure to ensure that users can reach GeoJS. Finally we want to thank Cloudflare who power our frontend traffic and enable us to cache our heavily dynamic API.
 
-![](https://geojs.io/img/DO_Logo_horizontal_blue.svg)
-
-![](https://geojs.io/img/DO_Logo_horizontal_blue.svg)
 ![](https://geojs.io/img/dnsspy_logo.png)
 ![](https://geojs.io/img/cloudflare_logo.png)
  
