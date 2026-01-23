@@ -4,3 +4,10 @@ download-cache/
 
 # Coverage reports
 luacov*
+
+# Environment files with secrets
+.env
+.env.local
+
+# MaxMind ASN module (downloaded during setup)
+lib/resty/
