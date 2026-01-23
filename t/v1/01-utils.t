@@ -403,3 +403,27 @@ GET /t
 [error]
 --- response_body
 {"items":["first","second","third"],"name":"test"}
+
+
+=== TEST 18: Test sorted_encode with empty tables
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local sorted_encode = require("geojs.utils").sorted_encode
+            local data = {
+                empty = {},
+                nested = {
+                    also_empty = {}
+                }
+            }
+            ngx.say(sorted_encode(data))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+{"empty":{},"nested":{"also_empty":{}}}
