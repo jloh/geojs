@@ -82,7 +82,7 @@ Content-type: application/x-www-form-urlencoded
 --- no_error_log
 [error]
 --- response_body
-{"attachments":[{"text":"Hmmm. Looks like you've given us a bad IP (`google.com`). This command only accepts IPs (IPv6 or IPv4) for now, sorry!","fallback":"Hmmm. Looks like you've given us a bad IP. This command only accepts IPs (IPv6 or IPv4) for now, sorry!","color":"danger","mrkdwn_in":["text"]}]}
+{"attachments":[{"color":"danger","fallback":"Hmmm. Looks like you've given us a bad IP. This command only accepts IPs (IPv6 or IPv4) for now, sorry!","mrkdwn_in":["text"],"text":"Hmmm. Looks like you've given us a bad IP (`google.com`). This command only accepts IPs (IPv6 or IPv4) for now, sorry!"}]}
 
 === TEST 4: Help command
 --- http_config eval

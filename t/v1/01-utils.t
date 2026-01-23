@@ -264,12 +264,12 @@ GET /t
         default_type text/plain;
         charset utf-8;
         content_by_lua_block {
-            local geoip_lookup = require("geojs.utils").geoip_lookup
-            local args       = ngx.req.get_uri_args()
-            local ip         = args.ip
-            local cjson      = require("cjson")
+            local geoip_lookup  = require("geojs.utils").geoip_lookup
+            local sorted_encode = require("geojs.utils").sorted_encode
+            local args          = ngx.req.get_uri_args()
+            local ip            = args.ip
 
-            ngx.print(cjson.encode(geoip_lookup(ip)))
+            ngx.print(sorted_encode(geoip_lookup(ip)))
         }
     }
 --- request eval
@@ -278,7 +278,7 @@ GET /t
 --- no_error_log
 [error]
 --- response_body eval
-['{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"time_zone":"America\/Chicago","accuracy_radius":1000,"longitude":-97.822},"autonomous_system_organization":"GOOGLE"}','{"subdivisions":[{"names":{}}],"autonomous_system_number":15169,"registered_country":{"geoname_id":6252001,"names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"continent":{"geoname_id":6255149,"names":{"en":"North America","ru":"Северная Америка","fr":"Amérique du Nord","pt-BR":"América do Norte","zh-CN":"北美洲","es":"Norteamérica","de":"Nordamerika","ja":"北アメリカ"},"code":"NA"},"postal":{},"city":{"names":{}},"country":{"geoname_id":6252001,"iso_code3":"USA","names":{"en":"United States","ru":"США","fr":"États-Unis","pt-BR":"Estados Unidos","zh-CN":"美国","es":"Estados Unidos","de":"USA","ja":"アメリカ合衆国"},"iso_code":"US"},"location":{"latitude":37.751,"time_zone":"America\/Chicago","accuracy_radius":100,"longitude":-97.822},"autonomous_system_organization":"GOOGLE"}']
+['{"autonomous_system_number":15169,"autonomous_system_organization":"Google LLC","city":{"names":{}},"continent":{"code":"NA","geoname_id":6255149,"names":{"de":"Nordamerika","en":"North America","es":"Norteamérica","fr":"Amérique du Nord","ja":"北アメリカ","pt-BR":"América do Norte","ru":"Северная Америка","zh-CN":"北美洲"}},"country":{"geoname_id":6252001,"iso_code":"US","iso_code3":"USA","names":{"de":"USA","en":"United States","es":"Estados Unidos","fr":"États Unis","ja":"アメリカ","pt-BR":"EUA","ru":"США","zh-CN":"美国"}},"location":{"accuracy_radius":1000,"latitude":37.751,"longitude":-97.822,"time_zone":"America\/Chicago"},"postal":{},"registered_country":{"geoname_id":6252001,"iso_code":"US","names":{"de":"USA","en":"United States","es":"Estados Unidos","fr":"États Unis","ja":"アメリカ","pt-BR":"EUA","ru":"США","zh-CN":"美国"}},"subdivisions":[{"names":{}}]}','{"autonomous_system_number":15169,"autonomous_system_organization":"Google LLC","city":{"names":{}},"continent":{"code":"NA","geoname_id":6255149,"names":{"de":"Nordamerika","en":"North America","es":"Norteamérica","fr":"Amérique du Nord","ja":"北アメリカ","pt-BR":"América do Norte","ru":"Северная Америка","zh-CN":"北美洲"}},"country":{"geoname_id":6252001,"iso_code":"US","iso_code3":"USA","names":{"de":"USA","en":"United States","es":"Estados Unidos","fr":"États Unis","ja":"アメリカ","pt-BR":"EUA","ru":"США","zh-CN":"美国"}},"location":{"accuracy_radius":1000,"latitude":37.751,"longitude":-97.822,"time_zone":"America\/Chicago"},"postal":{},"registered_country":{"geoname_id":6252001,"iso_code":"US","names":{"de":"USA","en":"United States","es":"Estados Unidos","fr":"États Unis","ja":"アメリカ","pt-BR":"EUA","ru":"США","zh-CN":"美国"}},"subdivisions":[{"names":{}}]}']
 
 
 === TEST 13: Test geo_lookup
@@ -290,12 +290,12 @@ GET /t
         default_type text/plain;
         charset utf-8;
         content_by_lua_block {
-            local geo_lookup = require("geojs.utils").geo_lookup
-            local args       = ngx.req.get_uri_args()
-            local ip         = args.ip
-            local cjson      = require("cjson")
+            local geo_lookup    = require("geojs.utils").geo_lookup
+            local sorted_encode = require("geojs.utils").sorted_encode
+            local args          = ngx.req.get_uri_args()
+            local ip            = args.ip
 
-            ngx.print(cjson.encode(geo_lookup(ip)))
+            ngx.print(sorted_encode(geo_lookup(ip)))
         }
     }
 --- request eval
@@ -304,7 +304,7 @@ GET /t
 --- no_error_log
 [error]
 --- response_body eval
-['{"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}','{"organization_name":"GOOGLE","accuracy":100,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"2001:4860:4860::8888","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}']
+['{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"}','{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"2001:4860:4860::8888","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"}']
 
 
 === TEST 14: Test country_lookup
@@ -317,11 +317,11 @@ GET /t
         charset utf-8;
         content_by_lua_block {
             local country_lookup = require("geojs.utils").country_lookup
+            local sorted_encode  = require("geojs.utils").sorted_encode
             local args           = ngx.req.get_uri_args()
             local ip             = args.ip
-            local cjson          = require("cjson")
 
-            ngx.print(cjson.encode(country_lookup(ip)))
+            ngx.print(sorted_encode(country_lookup(ip)))
         }
     }
 --- request eval

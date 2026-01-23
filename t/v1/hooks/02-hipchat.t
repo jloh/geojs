@@ -126,7 +126,7 @@ $::JSONPayload"
 --- no_error_log
 [error]
 --- response_body
-{"notify":"False","message_format":"html","card":{"icon":{"url":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/us.png","url@2x":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/2x\/us.png"},"title":"GeoIP results for 8.8.8.8","activity":{"html":"<strong>8.8.8.8<\/strong> is a United States IP belonging to GOOGLE"},"id":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx","description":{"value":"<strong>PTR:<\/strong> dns.google","format":"html"},"attributes":[{"label":"Powered by","value":{"label":"GeoJS","url":"https:\/\/geojs.io"}}],"style":"application","format":"medium"},"message":"Results for <b>8.8.8.8<\/b><br><br>PTR: dns.google<br>Country: United States<br>Organization: GOOGLE<br><br>Powered by <a href=\"https:\/\/geojs.io\" title=\"GeoJS\">GeoJS<\/a>"}
+{"card":{"activity":{"html":"<strong>8.8.8.8<\/strong> is a United States IP belonging to Google LLC"},"attributes":[{"label":"Powered by","value":{"label":"GeoJS","url":"https:\/\/geojs.io"}}],"description":{"format":"html","value":"<strong>PTR:<\/strong> dns.google"},"format":"medium","icon":{"url":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/us.png","url@2x":"https:\/\/static.jloh.co\/geojs\/flags\/v1\/2x\/us.png"},"id":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx","style":"application","title":"GeoIP results for 8.8.8.8"},"message":"Results for <b>8.8.8.8<\/b><br><br>PTR: dns.google<br>Country: United States<br>Organization: Google LLC<br><br>Powered by <a href=\"https:\/\/geojs.io\" title=\"GeoJS\">GeoJS<\/a>","message_format":"html","notify":"False"}
 
 === TEST 2: Webhook without a valid IP
 --- http_config eval
@@ -145,4 +145,4 @@ $::BadJSONPayload"
 --- no_error_log
 [error]
 --- response_body
-{"message":"Hmmm. Looks like you've given us a bad IP (<code>google.com<\/code>). This command only accepts IPs (IPv6 or IPv4) for now, sorry!","message_format":"html","color":"red","notify":"False"}
+{"color":"red","message":"Hmmm. Looks like you've given us a bad IP (<code>google.com<\/code>). This command only accepts IPs (IPv6 or IPv4) for now, sorry!","message_format":"html","notify":"False"}

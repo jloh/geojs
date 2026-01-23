@@ -49,7 +49,7 @@ Content-type: application/x-www-form-urlencoded
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"content":"### IP information for **8.8.8.8**\nPTR: `dns.google`\nCountry: United States\nOrganization: GOOGLE\nPowered by [GeoJS](https:\/\/geojs.io)"}
+{"content":"### IP information for **8.8.8.8**\nPTR: `dns.google`\nCountry: United States\nOrganization: Google LLC\nPowered by [GeoJS](https:\/\/geojs.io)"}
 
 === TEST 2: Bad token
 --- http_config eval
