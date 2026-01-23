@@ -1,10 +1,14 @@
 # README
 
+<center>
+
 ![](https://geojs.io/img/logo.png)
 
  A highly available backendless geo-location lookup API
 
  [![Tests](https://github.com/jloh/geojs/actions/workflows/test.yml/badge.svg)](https://github.com/jloh/geojs/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/jloh/geojs/badge.svg?branch=master)](https://coveralls.io/github/jloh/geojs?branch=master) ![](https://img.shields.io/github/release/jloh/geojs.svg) ![](https://img.shields.io/github/license/jloh/geojs.svg) 
+ 
+ </center>
 
 ## Introduction
 
