@@ -239,7 +239,8 @@ local function sorted_encode(data)
 		if k > max_index then max_index = k end
 	end
 	-- Also check for holes in the array
-	if is_array and max_index ~= #data then
+	-- Empty tables should be objects {}, not arrays []
+	if is_array and (max_index == 0 or max_index ~= #data) then
 		is_array = false
 	end
 
