@@ -35,7 +35,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}
+{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"}
 
 
 === TEST 1.b: JSON Endpoint specific IP
@@ -50,7 +50,7 @@ GET /v1/ip/geo/8.8.8.8.json
 --- response_headers
 Content-Type: application/json
 --- response_body
-{"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"}
+{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"}
 
 
 === TEST 2.a: JS Endpoint
@@ -67,7 +67,7 @@ GET /v1/ip/geo.js
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-geoip({"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"})
+geoip({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
 
 
 === TEST 2.b: JS Endpoint specific IP
@@ -82,7 +82,7 @@ GET /v1/ip/geo/8.8.8.8.js
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-geoip({"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"})
+geoip({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
 
 
 === TEST 3.a: JS Endpoint with custom callback
@@ -99,7 +99,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-tests({"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"})
+tests({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
 
 
 === TEST 3.b: JS Endpoint with custom callback specific IP
@@ -114,7 +114,7 @@ GET /v1/ip/geo/8.8.8.8.js?callback=tests
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-tests({"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"})
+tests({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
 
 
 === TEST 4.a: JS Endpoint sanitise user input
@@ -131,7 +131,7 @@ X-IP: 8.8.8.8
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-%3Cscript%3E({"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"})
+%3Cscript%3E({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
 
 
 === TEST 4.b: JS Endpoint sanitise user input
@@ -146,4 +146,4 @@ GET /v1/ip/geo/8.8.8.8.js?callback=<script>
 --- response_headers
 Content-Type: application/javascript
 --- response_body
-%3Cscript%3E({"organization_name":"GOOGLE","accuracy":1000,"asn":15169,"organization":"AS15169 GOOGLE","timezone":"America\/Chicago","longitude":"-97.822","country_code3":"USA","area_code":"0","ip":"8.8.8.8","country":"United States","continent_code":"NA","country_code":"US","latitude":"37.751"})
+%3Cscript%3E({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
