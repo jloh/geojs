@@ -2,6 +2,7 @@ local ngx_log            = ngx.log
 local escape_uri         = ngx.escape_uri
 local ngx_re             = ngx.re
 local codes              = require('geojs.codes')
+local cjson              = require('cjson')
 
 local log_level          = {
 	STDERR = ngx.STDERR,
@@ -220,6 +221,53 @@ function _M.generate_callback(default, req_args)
 	end
 	return callback
 end
+
+-- JSON encode with sorted keys for deterministic output
+local function sorted_encode(data)
+	if type(data) ~= "table" then
+		return cjson.encode(data)
+	end
+
+	-- Check if table is an array (sequential integer keys starting at 1)
+	local is_array = true
+	local max_index = 0
+	for k, _ in pairs(data) do
+		if type(k) ~= "number" or k < 1 or math.floor(k) ~= k then
+			is_array = false
+			break
+		end
+		if k > max_index then max_index = k end
+	end
+	-- Also check for holes in the array
+	if is_array and max_index ~= #data then
+		is_array = false
+	end
+
+	local parts = {}
+	if is_array then
+		for i = 1, #data do
+			parts[i] = sorted_encode(data[i])
+		end
+		return "[" .. table.concat(parts, ",") .. "]"
+	else
+		-- Get and sort keys
+		local keys = {}
+		for k in pairs(data) do
+			table.insert(keys, k)
+		end
+		table.sort(keys, function(a, b)
+			return tostring(a) < tostring(b)
+		end)
+
+		for _, k in ipairs(keys) do
+			local key_json = cjson.encode(k)
+			local val_json = sorted_encode(data[k])
+			table.insert(parts, key_json .. ":" .. val_json)
+		end
+		return "{" .. table.concat(parts, ",") .. "}"
+	end
+end
+_M.sorted_encode = sorted_encode
 
 -- Maxmind DB implemntation
 local function geoip_lookup(ip)

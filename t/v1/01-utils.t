@@ -331,3 +331,75 @@ GET /t
 [error]
 --- response_body eval
 ['{"country":"US","country_3":"USA","ip":"8.8.8.8","name":"United States"}', '{"country":"US","country_3":"USA","ip":"2001:4860:4860::8888","name":"United States"}']
+
+
+=== TEST 15: Test sorted_encode produces sorted keys
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local sorted_encode = require("geojs.utils").sorted_encode
+            -- Keys intentionally out of order
+            local data = {
+                zebra = "last",
+                apple = "first",
+                mango = "middle"
+            }
+            ngx.say(sorted_encode(data))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+{"apple":"first","mango":"middle","zebra":"last"}
+
+
+=== TEST 16: Test sorted_encode with nested tables
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local sorted_encode = require("geojs.utils").sorted_encode
+            local data = {
+                outer_z = "z",
+                outer_a = "a",
+                nested = {
+                    inner_z = "z",
+                    inner_a = "a"
+                }
+            }
+            ngx.say(sorted_encode(data))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+{"nested":{"inner_a":"a","inner_z":"z"},"outer_a":"a","outer_z":"z"}
+
+
+=== TEST 17: Test sorted_encode with arrays
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local sorted_encode = require("geojs.utils").sorted_encode
+            local data = {
+                items = {"first", "second", "third"},
+                name = "test"
+            }
+            ngx.say(sorted_encode(data))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+{"items":["first","second","third"],"name":"test"}
