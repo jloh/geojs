@@ -35,7 +35,20 @@ jobs:
           opm install xiaooloong/lua-resty-iconv=0.2.0
           opm install anjia0532/lua-resty-maxminddb=1.3.3
 
+      - name: Get current week number
+        id: week
+        run: echo "number=$(date +%Y-%W)" >> $GITHUB_OUTPUT
+
+      - name: Cache MaxMind GeoLite2 databases
+        id: cache-geoip
+        uses: actions/cache@v4
+        with:
+          path: /var/lib/GeoIP
+          # Cache key changes weekly (databases update Tues/Fri)
+          key: geoip-${{ steps.week.outputs.number }}-${{ hashFiles('.github/Geoip.conf') }}
+
       - name: Download MaxMind GeoLite2 databases
+        if: steps.cache-geoip.outputs.cache-hit != 'true'
         run: |
           cp .github/Geoip.conf /etc/GeoIP.conf
           echo "AccountID ${{ secrets.MAXMIND_ACCOUNT_ID }}" >> /etc/GeoIP.conf
