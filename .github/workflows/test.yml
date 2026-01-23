@@ -16,6 +16,7 @@ jobs:
 
       - name: Install system dependencies
         run: |
+          add-apt-repository ppa:maxmind/ppa
           apt-get update
           apt-get install -y cpanminus libgd-dev geoipupdate libmaxminddb0 libmaxminddb-dev curl
 
