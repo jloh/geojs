@@ -16,11 +16,10 @@ jobs:
 
       - name: Install system dependencies
         run: |
+          sed -i 's/^deb /deb [arch=amd64] /' /etc/apt/sources.list
+          sed -i 's/$/ contrib/' /etc/apt/sources.list
           apt-get update
-          apt-get install -y software-properties-common
-          add-apt-repository ppa:maxmind/ppa
-          apt-get update
-          apt-get install -y cpanminus libgd-dev geoipupdate libmaxminddb0 libmaxminddb-dev curl
+          apt-get install -y cpanminus libgd-dev libmaxminddb0 libmaxminddb-dev curl git geoipupdate
 
       - name: Install Perl test dependencies
         run: cpanm -v --notest Test::Nginx TAP::Harness::Archive TAP::Formatter::JUnit
