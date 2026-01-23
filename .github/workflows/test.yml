@@ -8,7 +8,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: openresty/openresty:1.27.1.2-1-bullseye-fat
+    container:
+      image: openresty/openresty:1.27.1.2-1-bullseye-fat
+      options: --init
 
     steps:
       - name: Checkout
