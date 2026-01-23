@@ -9,12 +9,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: openresty/openresty:1.27.1.2-1-bullseye-fat
+      image: openresty/openresty:1.27.1.2-1-bullseye-fat@sha256:1899c4cbca2199cb2dc847e99e81ef2b5ab2345df0db247af2f391ad6f711994
       options: --init
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Install system dependencies
         run: |
@@ -60,7 +60,7 @@ jobs:
           prove -r t -a test_results.tgz --formatter TAP::Formatter::JUnit > test-results/prove/results.xml
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: test-results
