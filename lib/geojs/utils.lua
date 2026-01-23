@@ -227,11 +227,11 @@ local function geoip_lookup(ip)
 	local geo_asn = require('resty.maxminddb_asn')
 	-- Init our DBs if they haven't been
 	if not geo.initted() then
-		geo.init("/usr/share/GeoIP/GeoLite2-City.mmdb")
+		geo.init("/var/lib/GeoIP/GeoLite2-City.mmdb")
 	end
 
 	if not geo_asn.initted() then
-		geo_asn.init("/usr/share/GeoIP/GeoLite2-ASN.mmdb")
+		geo_asn.init("/var/lib/GeoIP/GeoLite2-ASN.mmdb")
 	end
 
 	-- Lookup Geo data

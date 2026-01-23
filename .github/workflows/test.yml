@@ -40,7 +40,6 @@ jobs:
           echo "LicenseKey ${{ secrets.MAXMIND_TOKEN }}" >> /etc/GeoIP.conf
           geoipupdate -v
           rm /etc/GeoIP.conf
-          ls -la /usr/share/GeoIP/
 
       - name: Download MaxMind ASN Lua module
         run: |
