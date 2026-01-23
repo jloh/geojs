@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: ghcr.io/openresty/openresty:1.27.1.2-1-bullseye-fat
+    container: openresty/openresty:1.27.1.2-1-bullseye-fat
 
     steps:
       - name: Checkout
