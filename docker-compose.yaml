@@ -35,6 +35,7 @@ services:
   # Run tests
   tests:
     build: .
+    init: true
     working_dir: /opt/geojs
     volumes:
       - ./:/opt/geojs
@@ -46,6 +47,7 @@ services:
   # Interactive shell for debugging
   shell:
     build: .
+    init: true
     working_dir: /opt/geojs
     stdin_open: true
     tty: true
