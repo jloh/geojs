@@ -1,6 +1,6 @@
 # GeoJS Test Environment
 # Replicates the CI environment for local testing
-FROM openresty/openresty:1.27.1.2-1-bullseye-fat
+FROM openresty/openresty:1.27.1.2-1-bullseye-fat@sha256:1899c4cbca2199cb2dc847e99e81ef2b5ab2345df0db247af2f391ad6f711994
 
 # Install system dependencies
 # Note: We don't restrict to amd64 here to support ARM Macs
