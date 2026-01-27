@@ -30,12 +30,12 @@ else
     set +a
 fi
 
-# Check if setup has been run (volume has data)
-if ! docker volume inspect geojs_geoip-data >/dev/null 2>&1; then
+# Check if setup has been run (volume exists regardless of project name prefix)
+if ! docker volume ls -q --filter name=geoip-data | grep -q geoip-data; then
     echo "Running first-time setup (downloading MaxMind databases)..."
     docker compose run --rm setup
 fi
 
 # Run tests
 echo "Running tests..."
-docker compose run --rm tests "$@"
+docker compose run --rm tests prove -r t "$@"
