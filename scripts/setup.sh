@@ -15,9 +15,6 @@ AccountID $MAXMIND_ACCOUNT_ID
 LicenseKey $MAXMIND_LICENSE_KEY
 EOF
 
-echo "Config file contents:"
-cat /etc/GeoIP.conf
-
 echo "Downloading MaxMind databases..."
 geoipupdate -v
 
@@ -27,7 +24,7 @@ ls -la /var/lib/GeoIP/
 if [ -n "$MAXMIND_LUA_URL" ]; then
     echo "Downloading MaxMind ASN Lua module..."
     mkdir -p /opt/geojs/lib/resty
-    curl -s -o /opt/geojs/lib/resty/maxminddb_asn.lua "$MAXMIND_LUA_URL"
+    curl -fsSL -o /opt/geojs/lib/resty/maxminddb_asn.lua "$MAXMIND_LUA_URL"
 fi
 
 echo "Setup complete!"
