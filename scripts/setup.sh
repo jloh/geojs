@@ -21,10 +21,4 @@ geoipupdate -v
 echo "Databases downloaded successfully to /var/lib/GeoIP"
 ls -la /var/lib/GeoIP/
 
-if [ -n "$MAXMIND_LUA_URL" ]; then
-    echo "Downloading MaxMind ASN Lua module..."
-    mkdir -p /opt/geojs/lib/resty
-    curl -fsSL -o /opt/geojs/lib/resty/maxminddb_asn.lua "$MAXMIND_LUA_URL"
-fi
-
 echo "Setup complete!"
