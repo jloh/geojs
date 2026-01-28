@@ -9,7 +9,6 @@ services:
     environment:
       - MAXMIND_ACCOUNT_ID
       - MAXMIND_LICENSE_KEY
-      - MAXMIND_LUA_URL
     entrypoint: ["/bin/bash"]
     command: ["/opt/geojs/scripts/setup.sh"]
 

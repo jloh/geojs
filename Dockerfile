@@ -20,12 +20,12 @@ RUN echo "deb http://deb.debian.org/debian bullseye contrib" >> /etc/apt/sources
 RUN cpanm -v --notest Test::Nginx TAP::Harness::Archive TAP::Formatter::JUnit
 
 # Install OPM packages
-RUN opm install ledgetech/lua-resty-http=0.16.1 && \
-    opm install openresty/lua-resty-dns=0.21 && \
+RUN opm install ledgetech/lua-resty-http=0.17.1 && \
+    opm install openresty/lua-resty-dns=0.23 && \
     opm install openresty/lua-resty-upload=0.10 && \
     opm install bungle/lua-resty-reqargs=1.4 && \
     opm install xiaooloong/lua-resty-iconv=0.2.0 && \
-    opm install anjia0532/lua-resty-maxminddb=1.3.3
+    opm install anjia0532/lua-resty-maxminddb=1.3.7
 
 # Link OpenResty for Test::Nginx discovery
 RUN ln -sf /usr/local/openresty/bin/openresty /usr/bin/nginx

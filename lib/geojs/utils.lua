@@ -270,22 +270,20 @@ local function sorted_encode(data)
 end
 _M.sorted_encode = sorted_encode
 
--- Maxmind DB implemntation
+-- Maxmind DB implementation
 local function geoip_lookup(ip)
-	local geo     = require('resty.maxminddb')
-	local geo_asn = require('resty.maxminddb_asn')
+	local geo = require('resty.maxminddb')
 	-- Init our DBs if they haven't been
 	if not geo.initted() then
-		geo.init("/var/lib/GeoIP/GeoLite2-City.mmdb")
-	end
-
-	if not geo_asn.initted() then
-		geo_asn.init("/var/lib/GeoIP/GeoLite2-ASN.mmdb")
+		geo.init({
+			city = "/var/lib/GeoIP/GeoLite2-City.mmdb",
+			asn  = "/var/lib/GeoIP/GeoLite2-ASN.mmdb",
+		})
 	end
 
 	-- Lookup Geo data
-	local ip_geo, ip_geo_err = geo.lookup(ip)
-	local ip_asn, ip_asn_err = geo_asn.lookup(ip)
+	local ip_geo, ip_geo_err = geo.lookup(ip, nil, "city")
+	local ip_asn, ip_asn_err = geo.lookup(ip, nil, "asn")
 	if ip_geo_err then
 		ngx_log(log_level.ERR, "Error with Geo DB: ", ip_geo_err)
 	end
