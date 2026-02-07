@@ -273,3 +273,63 @@ GET /v1/ip/country.js?ip=8.8.8.8,%208.8.4.4
 Content-Type: application/javascript
 --- response_body
 countryip([{"country":"US","country_3":"USA","ip":"8.8.8.8","name":"United States"},{"country":"US","country_3":"USA","ip":"8.8.4.4","name":"United States"}])
+
+
+=== TEST 11: Plain text endpoint with private IP via query param does not error
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country?ip=10.10.123.190
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: text/plain
+--- response_body_like eval
+qr/10\.10\.123\.190:/
+
+
+=== TEST 12: JSON Endpoint with private IP via query param does not error
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country.json?ip=127.0.0.1
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/json
+--- response_body_like eval
+qr/"ip":"127\.0\.0\.1"/
+
+
+=== TEST 13: JS Endpoint with private IP via query param does not error
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country.js?ip=192.168.1.1
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/javascript
+--- response_body_like eval
+qr/"ip":"192\.168\.1\.1"/
+
+
+=== TEST 14: Full endpoint with private IP via query param does not error
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country/full?ip=172.16.0.1
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: text/plain
+--- response_body_like eval
+qr/172\.16\.0\.1:/
