@@ -427,3 +427,263 @@ GET /t
 [error]
 --- response_body
 {"empty":{},"nested":{"also_empty":{}}}
+
+
+=== TEST 19: Test is_private_ip with RFC1918 addresses
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local is_private_ip = require("geojs.utils").is_private_ip
+            -- Test RFC1918 private ranges
+            local private_ips = {
+                "10.0.0.1",
+                "10.255.255.255",
+                "172.16.0.1",
+                "172.31.255.255",
+                "192.168.0.1",
+                "192.168.255.255",
+            }
+            for _, ip in ipairs(private_ips) do
+                if not is_private_ip(ip) then
+                    ngx.say("FAIL: " .. ip .. " should be private")
+                    return
+                end
+            end
+            ngx.say("OK")
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 20: Test is_private_ip with loopback addresses
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local is_private_ip = require("geojs.utils").is_private_ip
+            -- Test loopback addresses
+            local loopback_ips = {
+                "127.0.0.1",
+                "127.0.0.2",
+                "127.255.255.255",
+            }
+            for _, ip in ipairs(loopback_ips) do
+                if not is_private_ip(ip) then
+                    ngx.say("FAIL: " .. ip .. " should be private")
+                    return
+                end
+            end
+            ngx.say("OK")
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 21: Test is_private_ip with link-local addresses
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local is_private_ip = require("geojs.utils").is_private_ip
+            -- Test link-local addresses (169.254.x.x)
+            local link_local_ips = {
+                "169.254.0.1",
+                "169.254.255.255",
+            }
+            for _, ip in ipairs(link_local_ips) do
+                if not is_private_ip(ip) then
+                    ngx.say("FAIL: " .. ip .. " should be private")
+                    return
+                end
+            end
+            ngx.say("OK")
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 22: Test is_private_ip with public addresses
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local is_private_ip = require("geojs.utils").is_private_ip
+            -- Test public addresses (should return false)
+            local public_ips = {
+                "8.8.8.8",
+                "1.1.1.1",
+                "208.67.222.222",
+                "142.250.185.46",
+            }
+            for _, ip in ipairs(public_ips) do
+                if is_private_ip(ip) then
+                    ngx.say("FAIL: " .. ip .. " should NOT be private")
+                    return
+                end
+            end
+            ngx.say("OK")
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 23: Test is_private_ip with IPv6 private addresses
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local is_private_ip = require("geojs.utils").is_private_ip
+            -- Test IPv6 private/reserved addresses
+            local private_ipv6 = {
+                "::1",                          -- loopback
+                "fc00::1",                      -- unique local
+                "fd00::1",                      -- unique local
+                "fe80::1",                      -- link-local
+            }
+            for _, ip in ipairs(private_ipv6) do
+                if not is_private_ip(ip) then
+                    ngx.say("FAIL: " .. ip .. " should be private")
+                    return
+                end
+            end
+            ngx.say("OK")
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 24: Test is_private_ip with public IPv6 addresses
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local is_private_ip = require("geojs.utils").is_private_ip
+            -- Test public IPv6 addresses (should return false)
+            local public_ipv6 = {
+                "2001:4860:4860::8888",         -- Google DNS
+                "2606:4700:4700::1111",         -- Cloudflare DNS
+            }
+            for _, ip in ipairs(public_ipv6) do
+                if is_private_ip(ip) then
+                    ngx.say("FAIL: " .. ip .. " should NOT be private")
+                    return
+                end
+            end
+            ngx.say("OK")
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 25: Test geoip_lookup with private IP does not log error
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local geoip_lookup  = require("geojs.utils").geoip_lookup
+            local sorted_encode = require("geojs.utils").sorted_encode
+            -- Lookup a private IP - should not log errors
+            local result = geoip_lookup("10.10.123.190")
+            -- Check that we got default values back
+            if result.autonomous_system_number == 64512 then
+                ngx.say("OK")
+            else
+                ngx.say("FAIL: Expected default ASN 64512, got " .. tostring(result.autonomous_system_number))
+            end
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 26: Test geo_lookup with private IP returns sensible defaults
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local geo_lookup    = require("geojs.utils").geo_lookup
+            local sorted_encode = require("geojs.utils").sorted_encode
+            -- Lookup a private IP
+            local result = geo_lookup("127.0.0.1")
+            -- Should return the IP and default ASN
+            if result.ip == "127.0.0.1" and result.asn == 64512 then
+                ngx.say("OK")
+            else
+                ngx.say("FAIL: ip=" .. tostring(result.ip) .. " asn=" .. tostring(result.asn))
+            end
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK
+
+
+=== TEST 27: Test country_lookup with private IP returns sensible defaults
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local country_lookup = require("geojs.utils").country_lookup
+            -- Lookup a private IP
+            local result = country_lookup("192.168.1.1")
+            -- Should return the IP with nil country (no data)
+            if result.ip == "192.168.1.1" then
+                ngx.say("OK")
+            else
+                ngx.say("FAIL: ip=" .. tostring(result.ip))
+            end
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+OK

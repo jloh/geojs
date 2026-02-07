@@ -210,6 +210,54 @@ function _M.validate_ip(ip)
 	end
 end
 
+-- Check if an IP address is private/reserved (not routable on the public internet)
+-- These addresses won't have data in MaxMind databases
+function _M.is_private_ip(ip)
+	-- IPv4 private/reserved ranges
+	local ipv4_patterns = {
+		"^10%.",                           -- 10.0.0.0/8 (RFC1918)
+		"^127%.",                          -- 127.0.0.0/8 (loopback)
+		"^169%.254%.",                     -- 169.254.0.0/16 (link-local)
+		"^192%.168%.",                     -- 192.168.0.0/16 (RFC1918)
+	}
+
+	-- Check simple IPv4 patterns first
+	for _, pattern in ipairs(ipv4_patterns) do
+		if ip:match(pattern) then
+			return true
+		end
+	end
+
+	-- 172.16.0.0/12 (RFC1918) - 172.16.0.0 to 172.31.255.255
+	local m = ip:match("^172%.(%d+)%.")
+	if m then
+		local second_octet = tonumber(m)
+		if second_octet and second_octet >= 16 and second_octet <= 31 then
+			return true
+		end
+	end
+
+	-- IPv6 private/reserved ranges (case-insensitive)
+	local ip_lower = ip:lower()
+
+	-- ::1 (loopback)
+	if ip_lower == "::1" then
+		return true
+	end
+
+	-- fc00::/7 (unique local addresses - fc00:: and fd00::)
+	if ip_lower:match("^fc") or ip_lower:match("^fd") then
+		return true
+	end
+
+	-- fe80::/10 (link-local)
+	if ip_lower:match("^fe[89ab]") then
+		return true
+	end
+
+	return false
+end
+
 -- Generates callbacks
 -- Most important part is it escapes them from possibly dodgy content
 function _M.generate_callback(default, req_args)
@@ -272,6 +320,15 @@ _M.sorted_encode = sorted_encode
 
 -- Maxmind DB implementation
 local function geoip_lookup(ip)
+	-- Skip MaxMind lookup for private/reserved IPs - they won't have data
+	if _M.is_private_ip(ip) then
+		local ip_data = {}
+		-- Return default values for private IPs
+		for k, v in pairs(tbl_copy(default_geo_lookup)) do ip_data[k] = v end
+		for k, v in pairs(tbl_copy(default_asn_lookup)) do ip_data[k] = v end
+		return ip_data
+	end
+
 	local geo = require('resty.maxminddb')
 	-- Init our DBs if they haven't been
 	if not geo.initted() then
@@ -316,10 +373,10 @@ function _M.country_lookup(ip)
 	-- Lookup IP
 	local lookup = geoip_lookup(ip)
 	local res = {
-		["country"]   = lookup["country"]["iso_code"],
-		["country_3"] = lookup["country"]["iso_code3"],
+		["country"]   = lookup["country"]["iso_code"] or "",
+		["country_3"] = lookup["country"]["iso_code3"] or "",
 		["ip"]        = ip,
-		["name"]      = lookup["country"]["names"]["en"]
+		["name"]      = lookup["country"]["names"]["en"] or ""
 	}
 	return res
 end
