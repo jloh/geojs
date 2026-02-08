@@ -20,6 +20,23 @@ local _M                 = {
 	_VERSION = "0.0.2"
 }
 
+-- Cache control headers for Cloudflare CDN
+-- When is_cacheable is true: cache at Cloudflare edge for 1 year (can be purged)
+-- When is_cacheable is false: tell Cloudflare not to cache
+-- In both cases, browsers/downstream caches are told not to cache
+local CACHE_TTL = 31536000 -- 1 year in seconds
+
+function _M.set_cache_headers(is_cacheable)
+	-- Always tell browsers not to cache (data may be stale after purge)
+	ngx.header["Cache-Control"] = "private, no-store"
+	-- Tell Cloudflare edge whether to cache
+	if is_cacheable then
+		ngx.header["Cloudflare-CDN-Cache-Control"] = "max-age=" .. CACHE_TTL
+	else
+		ngx.header["Cloudflare-CDN-Cache-Control"] = "private"
+	end
+end
+
 local default_geo_lookup = {
 	["city"] = {
 		["names"] = {}
