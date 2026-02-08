@@ -35,7 +35,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 2: /v1/dns/ptr/{IP} should BE cacheable
@@ -49,7 +48,7 @@ GET /v1/dns/ptr/8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -64,7 +63,7 @@ GET /v1/dns/ptr?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -82,7 +81,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 5: /v1/dns/ptr/{IP}.json should BE cacheable
@@ -96,7 +94,7 @@ GET /v1/dns/ptr/8.8.8.8.json
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -111,7 +109,7 @@ GET /v1/dns/ptr.json?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -129,7 +127,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 8: /v1/dns/ptr/{IP}.js should BE cacheable
@@ -143,7 +140,7 @@ GET /v1/dns/ptr/8.8.8.8.js
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -158,6 +155,6 @@ GET /v1/dns/ptr.js?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 

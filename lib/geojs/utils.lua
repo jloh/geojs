@@ -23,17 +23,22 @@ local _M                 = {
 -- Cache control headers for Cloudflare CDN
 -- When is_cacheable is true: cache at Cloudflare edge for 1 year (can be purged)
 -- When is_cacheable is false: tell Cloudflare not to cache
--- In both cases, browsers/downstream caches are told not to cache
+--
+-- Note: Cloudflare-CDN-Cache-Control requires Cache-Control to contain only
+-- s-maxage, must-revalidate, or public directives. Using "private" or "no-store"
+-- causes Cloudflare to BYPASS the cache entirely.
 local CACHE_TTL = 31536000 -- 1 year in seconds
 
 function _M.set_cache_headers(is_cacheable)
-	-- Always tell browsers not to cache (data may be stale after purge)
-	ngx.header["Cache-Control"] = "private, no-store"
-	-- Tell Cloudflare edge whether to cache
 	if is_cacheable then
+		-- For cacheable responses: browsers see stale and must revalidate,
+		-- but Cloudflare edge caches for 1 year. Browser revalidation hits
+		-- edge cache (fast) not origin.
+		ngx.header["Cache-Control"] = "max-age=0, must-revalidate"
 		ngx.header["Cloudflare-CDN-Cache-Control"] = "max-age=" .. CACHE_TTL
 	else
-		ngx.header["Cloudflare-CDN-Cache-Control"] = "private"
+		-- For non-cacheable responses: nothing caches (uses requester's IP)
+		ngx.header["Cache-Control"] = "private, no-store"
 	end
 end
 
