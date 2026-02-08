@@ -427,3 +427,66 @@ GET /t
 [error]
 --- response_body
 {"empty":{},"nested":{"also_empty":{}}}
+
+
+=== TEST 19: Test split_ips trims whitespace
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local split_ips     = require("geojs.utils").split_ips
+            local cjson         = require("cjson")
+            local json_encode   = cjson.encode
+            local test_string   = '8.8.8.8, 1.1.1.1'
+            ngx.say(json_encode(split_ips(test_string)))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+["8.8.8.8","1.1.1.1"]
+
+
+=== TEST 20: Test split_ips with multiple spaces
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local split_ips     = require("geojs.utils").split_ips
+            local cjson         = require("cjson")
+            local json_encode   = cjson.encode
+            local test_string   = '  8.8.8.8  ,  1.1.1.1  , 8.8.4.4  '
+            ngx.say(json_encode(split_ips(test_string)))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+["8.8.8.8","1.1.1.1","8.8.4.4"]
+
+
+=== TEST 21: Test split_ips filters empty strings
+--- http_config eval
+"$::HttpConfig"
+--- config
+    location /t {
+        content_by_lua_block {
+            local split_ips     = require("geojs.utils").split_ips
+            local cjson         = require("cjson")
+            local json_encode   = cjson.encode
+            local test_string   = '8.8.8.8,,1.1.1.1'
+            ngx.say(json_encode(split_ips(test_string)))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+["8.8.8.8","1.1.1.1"]

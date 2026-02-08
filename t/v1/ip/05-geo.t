@@ -147,3 +147,33 @@ GET /v1/ip/geo/8.8.8.8.js?callback=<script>
 Content-Type: application/javascript
 --- response_body
 %3Cscript%3E({"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"})
+
+
+=== TEST 5: JSON Endpoint with comma-separated IPs with spaces (issue #40)
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/geo.json?ip=8.8.8.8,%208.8.4.4
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/json
+--- response_body
+[{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"},{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.4.4","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"}]
+
+
+=== TEST 6: JS Endpoint with comma-separated IPs with spaces (issue #40)
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/geo.js?ip=8.8.8.8,%208.8.4.4
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/javascript
+--- response_body
+geoip([{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.8.8","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"},{"accuracy":1000,"area_code":"0","asn":15169,"continent_code":"NA","country":"United States","country_code":"US","country_code3":"USA","ip":"8.8.4.4","latitude":"37.751","longitude":"-97.822","organization":"AS15169 Google LLC","organization_name":"Google LLC","timezone":"America\/Chicago"}])

@@ -211,3 +211,65 @@ GET /v1/ip/country/full/8.8.8.8
 Content-Type: text/plain
 --- response_body
 United States
+
+
+=== TEST 7: JSON Endpoint with comma-separated IPs with spaces (issue #40)
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country.json?ip=8.8.8.8,%208.8.4.4
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/json
+--- response_body
+[{"country":"US","country_3":"USA","ip":"8.8.8.8","name":"United States"},{"country":"US","country_3":"USA","ip":"8.8.4.4","name":"United States"}]
+
+
+=== TEST 8: Plain text endpoint with comma-separated IPs with spaces (issue #40)
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country?ip=8.8.8.8,%208.8.4.4
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: text/plain
+--- response_body
+8.8.8.8: US
+8.8.4.4: US
+
+
+=== TEST 9: Full text endpoint with comma-separated IPs with spaces (issue #40)
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country/full?ip=8.8.8.8,%208.8.4.4
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: text/plain
+--- response_body
+8.8.8.8: United States
+8.8.4.4: United States
+
+
+=== TEST 10: JS Endpoint with comma-separated IPs with spaces (issue #40)
+--- http_config eval
+"$::HttpConfig"
+--- config
+    include "../../../conf/v1/ip.conf";
+--- request
+GET /v1/ip/country.js?ip=8.8.8.8,%208.8.4.4
+--- no_error_log
+[error]
+--- response_headers
+Content-Type: application/javascript
+--- response_body
+countryip([{"country":"US","country_3":"USA","ip":"8.8.8.8","name":"United States"},{"country":"US","country_3":"USA","ip":"8.8.4.4","name":"United States"}])

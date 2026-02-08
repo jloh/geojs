@@ -155,6 +155,20 @@ function _M.trim(s)
 	return s:match '^()%s*$' and '' or s:match '^%s*(.*%S)'
 end
 
+-- Split comma-separated IPs and trim whitespace from each
+-- This prevents issues when clients pass IPs like "8.8.8.8, 1.1.1.1" (issue #40)
+function _M.split_ips(ip_string)
+	local raw = _M.split(ip_string, ',')
+	local trimmed = {}
+	for _, ip in ipairs(raw) do
+		local t = _M.trim(ip)
+		if t ~= "" then
+			table.insert(trimmed, t)
+		end
+	end
+	return trimmed
+end
+
 -- Gets a PTR
 function _M.get_ptr(ip)
 	local resolver = require "resty.dns.resolver"
