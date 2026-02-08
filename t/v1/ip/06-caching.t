@@ -32,7 +32,6 @@ GET /v1/ip
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 2: /v1/ip.json should NOT be cacheable (uses requester IP)
@@ -46,7 +45,6 @@ GET /v1/ip.json
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 3: /v1/ip.js should NOT be cacheable (uses requester IP)
@@ -60,7 +58,6 @@ GET /v1/ip.js
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 4: /v1/ip/country (no IP param) should NOT be cacheable
@@ -76,7 +73,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 5: /v1/ip/country/{IP} should BE cacheable (explicit IP in path)
@@ -89,7 +85,7 @@ GET /v1/ip/country/8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -103,7 +99,7 @@ GET /v1/ip/country?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -120,7 +116,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 8: /v1/ip/country/{IP}.json should BE cacheable
@@ -133,7 +128,7 @@ GET /v1/ip/country/8.8.8.8.json
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -147,7 +142,7 @@ GET /v1/ip/country.json?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -164,7 +159,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 11: /v1/ip/country/{IP}.js should BE cacheable
@@ -177,7 +171,7 @@ GET /v1/ip/country/8.8.8.8.js
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -191,7 +185,7 @@ GET /v1/ip/country.js?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -208,7 +202,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 14: /v1/ip/country/full/{IP} should BE cacheable
@@ -221,7 +214,7 @@ GET /v1/ip/country/full/8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -238,7 +231,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 16: /v1/ip/geo/{IP}.json should BE cacheable
@@ -251,7 +243,7 @@ GET /v1/ip/geo/8.8.8.8.json
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -265,7 +257,7 @@ GET /v1/ip/geo.json?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -282,7 +274,6 @@ X-IP: 8.8.8.8
 [error]
 --- response_headers
 Cache-Control: private, no-store
-Cloudflare-CDN-Cache-Control: private
 
 
 === TEST 19: /v1/ip/geo/{IP}.js should BE cacheable
@@ -295,7 +286,7 @@ GET /v1/ip/geo/8.8.8.8.js
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
 
@@ -309,6 +300,6 @@ GET /v1/ip/geo.js?ip=8.8.8.8
 --- no_error_log
 [error]
 --- response_headers
-Cache-Control: private, no-store
+Cache-Control: max-age=0, must-revalidate
 Cloudflare-CDN-Cache-Control: max-age=31536000
 
