@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: openresty/openresty:1.27.1.2-1-bullseye-fat@sha256:1899c4cbca2199cb2dc847e99e81ef2b5ab2345df0db247af2f391ad6f711994
+      image: openresty/openresty:1.31.1.1-1-bullseye-fat@sha256:a6308527a91ea1cbb6a85d51c1355b70c7ad8031fb54e71d58ec23db27693541
       options: --init
 
     steps:
